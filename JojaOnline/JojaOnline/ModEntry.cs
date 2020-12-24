@@ -30,7 +30,7 @@ namespace JojaOnline
         private void OnGameLaunched(object sender, GameLaunchedEventArgs e)
         {
             string jojaLetterBGPath = Path.Combine("assets", "jojaLetterBG.png");
-            Letter letter = new Letter("JojaExample", "Valued Customer,^^Thank you for using Joja Online. You'll find your order attached below.^^We look forward to your continued business.^^- Joja Co.", new List<Item> { new StardewValley.Object(60, 5), new StardewValley.Object(388, 50) }, l => !Game1.player.mailReceived.Contains(l.Id), l => Game1.player.mailReceived.Add(l.Id))
+            Letter letter = new Letter("JojaExample", "Valued Customer,^^Thank you for using Joja Online. Your order is attached below.^^We look forward to your continued business.^^- Joja Co.", new List<Item> { new StardewValley.Object(60, 5), new StardewValley.Object(388, 50) }, l => !Game1.player.mailReceived.Contains(l.Id), l => Game1.player.mailReceived.Add(l.Id))
             {
                 LetterTexture = modHelper.Content.Load<Texture2D>(jojaLetterBGPath),
                 TextColor = 7
