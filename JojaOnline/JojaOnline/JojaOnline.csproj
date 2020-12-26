@@ -62,6 +62,7 @@
     <Compile Include="JojaOnline\MailData.cs" />
     <Compile Include="JojaOnline\ModEntry.cs" />
     <Compile Include="JojaOnline\Patches\FurniturePatch.cs" />
+    <Compile Include="JojaOnline\UI\JojaSite.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

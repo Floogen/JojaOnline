@@ -1,4 +1,5 @@
 ﻿using Harmony;
+using JojaOnline.JojaOnline.UI;
 using StardewValley;
 using StardewValley.Menus;
 using StardewValley.Objects;
@@ -23,7 +24,8 @@ namespace JojaOnline.JojaOnline.Patches
         {
             if (__instance.name == "Computer")
             {
-                Game1.activeClickableMenu = new ShopMenu(Utility.getAllFurnituresForFree(), 0, null, null, null, "Furniture Catalogue");
+                // May need to scale
+                Game1.activeClickableMenu = new JojaSite(1000, 1250);
                 return false;
             }
 
