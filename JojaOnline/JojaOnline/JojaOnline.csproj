@@ -83,8 +83,21 @@
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\Pathoschild.Stardew.ModBuildConfig.3.2.2\build\Pathoschild.Stardew.ModBuildConfig.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Pathoschild.Stardew.ModBuildConfig.3.2.2\build\Pathoschild.Stardew.ModBuildConfig.targets'))" />
   </Target>
+  <Target Name="PostBuildMacros">
+    <GetAssemblyIdentity AssemblyFiles="$(TargetPath)">
+      <Output TaskParameter="Assemblies" ItemName="Targets" />
+    </GetAssemblyIdentity>
+    <ItemGroup>
+      <VersionNumber Include="$([System.Text.RegularExpressions.Regex]::Replace(&quot;%(Targets.Version)&quot;, &quot;^(.+?)(\.0+)$&quot;, &quot;$1&quot;))" />
+    </ItemGroup>
+  </Target>
   <PropertyGroup>
-    <PostBuildEvent>move "$(TargetDir)manifest.json" "$(TargetDir)$(ProjectName)"
+    <PostBuildEventDependsOn>
+    $(PostBuildEventDependsOn);
+    PostBuildMacros;
+  </PostBuildEventDependsOn>
+    <PostBuildEvent>powershell -Command "(ls . *manifest.json -rec | foreach-object { $f=$_; (gc -Path """$f""") -replace 'REPLACE_ME_WITH_VERSION',  '@(VersionNumber)' | sc """$f""" })"
+move "$(TargetDir)manifest.json" "$(TargetDir)$(ProjectName)"
 move "$(TargetDir)$(ProjectName).dll" "$(TargetDir)$(ProjectName)"
 move "$(TargetDir)$(ProjectName).pdb" "$(TargetDir)$(ProjectName)"
 xcopy /s /y /i "$(TargetDir)" "$(GameModsPath)\$(ProjectName)"</PostBuildEvent>
