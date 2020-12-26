@@ -1,0 +1,21 @@
+﻿{
+  "furniture": [
+    {
+      "id": 0,
+      "texture": "assets/computer.png",
+      "name": "Computer",
+      "description": "A computer",
+      "type": "decor",
+      "price": 100,
+      "index": 0,
+      "width": 2,
+      "height": 2,
+      "boxWidth": 2,
+      "boxHeight": 1,
+      "rotations": 1,
+      "setWidth": 2,
+      "animationFrames": 4,
+      "fps": 15
+    }
+  ]
+}

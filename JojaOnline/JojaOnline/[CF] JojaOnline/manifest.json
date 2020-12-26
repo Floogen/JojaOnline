@@ -1,0 +1,13 @@
+﻿{
+   "Name": "[CF] JojaOnline",
+   "Author": "PeacefulEnd",
+   "Version": "REPLACE_ME_WITH_VERSION",
+   "Description": "",
+   "UniqueID": "PeacefulEnd.JojaOnlineCF",
+   "UpdateKeys": [],
+   "MinimumApiVersion": "3.0.0",
+   "ContentPackFor": {
+    	"UniqueID": "Platonymous.CustomFurniture"
+  },
+  "Dependencies": []
+}
