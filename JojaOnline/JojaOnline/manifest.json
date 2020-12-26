@@ -2,7 +2,7 @@
   "Name": "JojaOnline",
   "Author": "PeacefulEnd",
   "Version": "REPLACE_ME_WITH_VERSION",
-  "Description": "Purchasing from Joja has never been easier!",
+  "Description": "Purchasing from Joja Corporation has never been easier!",
   "UniqueID": "PeacefulEnd.JojaOnline",
   "EntryDll": "JojaOnline.dll",
   "MinimumApiVersion": "3.0.0",
@@ -10,7 +10,7 @@
   "Dependencies": [
    {
       "UniqueID": "DIGUS.MailFrameworkMod",
-      "IsRequired": false
+      "IsRequired": true
    }
 ]
 }
