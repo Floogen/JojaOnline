@@ -27,7 +27,7 @@ namespace JojaOnline
             }
             catch (Exception e)
             {
-                Monitor.Log($"Issue with Harmony patch: {e.StackTrace}", LogLevel.Error);
+                Monitor.Log($"Issue with Harmony patch: {e}", LogLevel.Error);
             }
 
             helper.Events.GameLoop.GameLaunched += this.OnGameLaunched;
@@ -36,8 +36,8 @@ namespace JojaOnline
 
         public void harmonyPatch()
         {
-            //var harmony = HarmonyInstance.Create(this.ModManifest.UniqueID);
-            //harmony.PatchAll(Assembly.GetExecutingAssembly());)
+            var harmony = HarmonyInstance.Create(this.ModManifest.UniqueID);
+            harmony.PatchAll(Assembly.GetExecutingAssembly());
         }
 
         /// <summary>
