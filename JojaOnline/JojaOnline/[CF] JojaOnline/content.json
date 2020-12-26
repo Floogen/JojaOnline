@@ -1,4 +1,8 @@
 ﻿{
+  "author": "PeacefulEnd",
+  "name": "JojaOnline Furniture",
+  "useid": "JojaOnline",
+  "version": "1.0.0",
   "furniture": [
     {
       "id": 0,
