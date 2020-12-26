@@ -59,8 +59,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="MailData.cs" />
-    <Compile Include="ModEntry.cs" />
+    <Compile Include="JojaOnline\MailData.cs" />
+    <Compile Include="JojaOnline\ModEntry.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

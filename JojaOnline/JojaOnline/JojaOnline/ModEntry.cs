@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
+using Harmony;
 using MailFrameworkMod;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -19,8 +21,23 @@ namespace JojaOnline
         public override void Entry(IModHelper helper)
         {
             modHelper = helper;
+            try
+            {
+                harmonyPatch();
+            }
+            catch (Exception e)
+            {
+                Monitor.Log($"Issue with Harmony patch: {e.StackTrace}", LogLevel.Error);
+            }
+
             helper.Events.GameLoop.GameLaunched += this.OnGameLaunched;
             helper.Events.GameLoop.DayStarted += this.OnDayStarting;
+        }
+
+        public void harmonyPatch()
+        {
+            //var harmony = HarmonyInstance.Create(this.ModManifest.UniqueID);
+            //harmony.PatchAll(Assembly.GetExecutingAssembly());)
         }
 
         /// <summary>
@@ -29,6 +46,8 @@ namespace JojaOnline
         /// </summary>
         private void OnGameLaunched(object sender, GameLaunchedEventArgs e)
         {
+            // TODO: Make custom computer item
+            // TODO: Look into Content Patcher
             string jojaLetterBGPath = Path.Combine("assets", "jojaLetterBG.png");
             Letter letter = new Letter("JojaExample", "Valued Customer,^^Thank you for using Joja Online. Your order is attached below.^^We look forward to your continued business.^^- Joja Co.", new List<Item> { new StardewValley.Object(60, 5), new StardewValley.Object(388, 50) }, l => !Game1.player.mailReceived.Contains(l.Id), l => Game1.player.mailReceived.Add(l.Id))
             {
