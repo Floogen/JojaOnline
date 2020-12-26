@@ -10,9 +10,11 @@ using StardewModdingAPI;
 using StardewModdingAPI.Events;
 using StardewModdingAPI.Utilities;
 using StardewValley;
+using StardewValley.Objects;
 
 namespace JojaOnline
 {
+    // NOTE: Compability issue with SpaceCore, must be v1.4.0 and below until they fix save serializer
     public class ModEntry : Mod
     {
         // Make this available to other methods in the class to access
@@ -61,7 +63,7 @@ namespace JojaOnline
 
         private void OnDayStarting(object sender, DayStartedEventArgs e)
         {
-            this.Monitor.Log($"{Game1.player.Name} sent mail!", LogLevel.Debug);
+            this.Monitor.Log($"{Game1.player.Name} got mail!", LogLevel.Debug);
         }
     }
 }
