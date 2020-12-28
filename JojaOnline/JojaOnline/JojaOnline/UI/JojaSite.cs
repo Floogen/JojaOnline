@@ -14,6 +14,7 @@ namespace JojaOnline.JojaOnline.UI
     public class JojaSite: IClickableMenu
     {
         private readonly float scale = 1f;
+        private readonly Texture2D sourceSheet = JojaResources.GetJojaSiteSpriteSheet();
         private readonly List<ClickableTextureComponent> clickables = new List<ClickableTextureComponent>();
 
         public JojaSite(int uiWidth, int uiHeight) : base(Game1.uiViewport.Width / 2 - (uiWidth + IClickableMenu.borderWidth * 2) / 2, Game1.uiViewport.Height / 2 - (uiHeight + IClickableMenu.borderWidth * 2) / 2, uiWidth + IClickableMenu.borderWidth * 2, uiHeight + IClickableMenu.borderWidth * 2, showUpperRightCloseButton: true)
@@ -27,7 +28,6 @@ namespace JojaOnline.JojaOnline.UI
             }
 
             // Draw the clickables (buttons, etc)
-            Texture2D sourceSheet = JojaResources.GetJojaSiteSpriteSheet();
 
             // Joja Ads
             drawClickable("jojaCanAd", 42, 248, sourceSheet, new Rectangle(608, 0, 208, 208));
@@ -56,12 +56,13 @@ namespace JojaOnline.JojaOnline.UI
             Game1.dayTimeMoneyBox.drawMoneyBox(b);
 
             // Draw the custom store BG
-            Rectangle bounds = new Rectangle(this.xPositionOnScreen + 32, this.yPositionOnScreen + 100, this.width, this.height);
-            ClickableTextureComponent bg = new ClickableTextureComponent(bounds, JojaResources.GetJojaSiteBackground(), new Rectangle(0, 0, 1008, 1194), scale)
-            {
-                name = "background"
-            };
-            bg.draw(b);
+            b.Draw(JojaResources.GetJojaSiteBackground(), new Vector2(this.xPositionOnScreen + 32, this.yPositionOnScreen + 100), new Rectangle(0, 0, 1008, 1194), Color.White, 0f, Vector2.Zero, scale, SpriteEffects.None, 1f);
+
+            // Draw the static images
+            //b.Draw(sourceSheet, new Vector2((this.xPositionOnScreen + 32) * scale, (this.yPositionOnScreen + 100) * scale), new Rectangle(0, 0, 1008, 1194), Color.White, 0f, Vector2.Zero, scale, SpriteEffects.None, 1f);
+            //b.Draw(sourceSheet, new Vector2((this.xPositionOnScreen + 435) * scale, (this.yPositionOnScreen + 500) * scale), new Rectangle(0, 704, 56, 56), Color.White, 0f, Vector2.Zero, scale, SpriteEffects.None, 1f);
+            //https://spacechase0.com/mods/stardew-valley/better-shop-menu
+            // Draw the clickables
             foreach (ClickableTextureComponent clickable in clickables)
             {
                 clickable.draw(b);
@@ -73,7 +74,7 @@ namespace JojaOnline.JojaOnline.UI
 
         public void drawClickable(string identifier, int x, int y, Texture2D sourceTexture, Rectangle sourceRect)
         {
-            Rectangle bounds = new Rectangle((int)(this.xPositionOnScreen + x * scale), (int)(this.yPositionOnScreen + y * scale), (int)(sourceRect.Width * scale), (int)(sourceRect.Height * scale));
+            Rectangle bounds = new Rectangle((int)((this.xPositionOnScreen + x) * scale), (int)((this.yPositionOnScreen + y) * scale), (int)(sourceRect.Width * scale), (int)(sourceRect.Height * scale));
             ClickableTextureComponent clickable = new ClickableTextureComponent(bounds, sourceTexture, sourceRect, scale)
             {
                 name = identifier
