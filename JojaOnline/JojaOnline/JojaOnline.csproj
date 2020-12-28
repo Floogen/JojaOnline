@@ -59,6 +59,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="JojaOnline\JojaResources.cs" />
     <Compile Include="JojaOnline\MailData.cs" />
     <Compile Include="JojaOnline\ModEntry.cs" />
     <Compile Include="JojaOnline\Patches\FurniturePatch.cs" />
@@ -81,6 +82,12 @@
   <ItemGroup />
   <ItemGroup>
     <Content Include="JojaOnline\assets\jojaLetterBG.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="JojaOnline\assets\jojaSiteSprites.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="JojaOnline\assets\jojaStoreBG.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="[CF] JojaOnline\assets\computer.png">
