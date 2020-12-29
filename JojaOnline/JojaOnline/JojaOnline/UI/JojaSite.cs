@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using StardewModdingAPI;
 using StardewValley;
 using StardewValley.BellsAndWhistles;
 using StardewValley.Menus;
@@ -16,11 +17,12 @@ namespace JojaOnline.JojaOnline.UI
     {
         private readonly float scale = 1f;
         private readonly Texture2D sourceSheet = JojaResources.GetJojaSiteSpriteSheet();
-        private readonly List<ClickableTextureComponent> clickables = new List<ClickableTextureComponent>();
+        private readonly IMonitor monitor = JojaResources.GetMonitor();
 
         private Rectangle scrollBarRunner;
         private ClickableTextureComponent scrollBar;
         private List<ClickableComponent> forSaleButtons = new List<ClickableComponent>();
+        private List<ClickableTextureComponent> clickables = new List<ClickableTextureComponent>();
 
         private bool scrolling = false;
         private int currentItemIndex = 0;
@@ -127,15 +129,18 @@ namespace JojaOnline.JojaOnline.UI
             {
                 for (int i = 0; i < this.forSaleButtons.Count; i++)
                 {
-                    if (this.currentItemIndex + i >= this.forSale.Count || !this.forSaleButtons[i].containsPoint(x, y))
+                    if ((this.currentItemIndex * 2) + i >= this.forSale.Count || !this.forSaleButtons[i].containsPoint(x, y))
                     {
                         continue;
                     }
-                    int index = i + (currentItemIndex * 2);
+
+                    int index = (this.currentItemIndex * 2) + i;
                     if (this.forSale[index] != null)
                     {
+                        // DEBUG: monitor.Log($"{index} | {this.forSale[index].Name}");
                         int toBuy = (!Game1.oldKBState.IsKeyDown(Keys.LeftShift)) ? 1 : 5;
                         toBuy = Math.Min(toBuy, this.forSale[index].maximumStackSize());
+
                         if (this.tryToPurchaseItem(this.forSale[index], toBuy, x, y, index))
                         {
                             DelayedAction.playSoundAfterDelay("coin", 100);
@@ -191,7 +196,7 @@ namespace JojaOnline.JojaOnline.UI
                     continue;
                 }
 
-                int index = i + (currentItemIndex * 2);
+                int index = (this.currentItemIndex * 2) + i;
                 if (this.forSale[index] != null && itemsInCart.ContainsKey(this.forSale[index]))
                 {
                     int toRemove = (!Game1.oldKBState.IsKeyDown(Keys.LeftShift)) ? 1 : 5;
