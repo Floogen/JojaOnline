@@ -93,6 +93,62 @@ namespace JojaOnline.JojaOnline.UI
             this.upperRightCloseButton = new ClickableTextureComponent(new Rectangle(this.xPositionOnScreen + this.width - 50, this.yPositionOnScreen + 70, 48, 48), Game1.mouseCursors, new Rectangle(337, 494, 12, 12), 4f);
         }
 
+        public override void draw(SpriteBatch b)
+        {
+            b.Draw(Game1.fadeToBlackRect, Game1.graphics.GraphicsDevice.Viewport.Bounds, Color.Black * 0.75f);
+
+            Game1.drawDialogueBox(this.xPositionOnScreen, this.yPositionOnScreen, this.width, this.height, speaker: false, drawOnlyBox: true, r: 80, g: 123, b: 186);
+            Game1.dayTimeMoneyBox.drawMoneyBox(b);
+
+            // Draw the custom store BG
+            b.Draw(JojaResources.GetJojaSiteBackground(), new Vector2(this.xPositionOnScreen + 32, this.yPositionOnScreen + 100), new Rectangle(0, 0, 1008, 1194), Color.White, 0f, Vector2.Zero, scale, SpriteEffects.None, 1f);
+
+            // Draw the current unique amount of items in cart
+            drawCartQuantity(930, 125, sourceSheet, new Rectangle(0, 272, 30, 45)).draw(b);
+
+            // Draw the clickables
+            foreach (ClickableTextureComponent clickable in clickables)
+            {
+                clickable.draw(b);
+            }
+
+            IClickableMenu.drawTextureBox(b, sourceSheet, new Rectangle(0, 896, 24, 24), scrollBarRunner.X, scrollBarRunner.Y, scrollBarRunner.Width, scrollBarRunner.Height, Color.White, 1f, drawShadow: false);
+            scrollBar.draw(b);
+
+            // Draw the for sale buttons
+            foreach (ClickableComponent button in forSaleButtons)
+            {
+                int buttonPosition = forSaleButtons.IndexOf(button) + (currentItemIndex * 2);
+                if (buttonPosition >= forSale.Count)
+                {
+                    continue;
+                }
+
+                IClickableMenu.drawTextureBox(b, sourceSheet, new Rectangle(0, 768, 60, 60), button.bounds.X, button.bounds.Y, button.bounds.Width, button.bounds.Height, Color.White, scale, drawShadow: false);
+
+                // Get the quantity that is in the cart (if any)
+                int currentlyInCart = 0;
+                if (itemsInCart.ContainsKey(forSale[buttonPosition]))
+                {
+                    currentlyInCart = itemsInCart[forSale[buttonPosition]][1];
+                }
+
+                // Draw the item for sale
+                forSale[buttonPosition].drawInMenu(b, new Vector2(button.bounds.X + 32 - 8, button.bounds.Y + 15), scale, 1f, 0.9f, StackDrawType.Draw, Color.White * (itemsInCart.Count < maxUniqueCartItems || currentlyInCart > 0 ? 1f : 0.25f), drawShadow: true);
+
+                // Draw the quantity in the cart
+                SpriteText.drawString(b, $"In Cart: {currentlyInCart}", button.bounds.X + 96 + 8, button.bounds.Y + 35, 999999, -1, 999999, 1f, 0.88f, junimoText: false, -1, "", 8);
+
+                // Draw the price
+                string price = forSale[buttonPosition].salePrice() + " ";
+                SpriteText.drawString(b, price, button.bounds.Right - SpriteText.getWidthOfString(price) - 30, button.bounds.Bottom - 55, 999999, -1, 999999, (itemsInCart.Count < maxUniqueCartItems || currentlyInCart > 0 ? 1f : 0.5f), 0.88f, junimoText: false, -1, "", 1);
+                Utility.drawWithShadow(b, Game1.mouseCursors, new Vector2(button.bounds.Right - 52, button.bounds.Bottom - 50), new Rectangle(193, 373, 9, 10), Color.White * (itemsInCart.Count < maxUniqueCartItems || currentlyInCart > 0 ? 1f : 0.25f), 0f, Vector2.Zero, 4f, flipped: false, 1f, -1, -1, 0f);
+            }
+
+            this.upperRightCloseButton.draw(b);
+            this.drawMouse(b);
+        }
+
         private bool tryToPurchaseItem(ISalable item, int numberToBuy, int x, int y, int indexInForSaleList)
         {
             if (item.GetSalableInstance().maximumStackSize() < numberToBuy)
@@ -231,62 +287,6 @@ namespace JojaOnline.JojaOnline.UI
                 this.setScrollBarToCurrentIndex();
                 return;
             }
-        }
-
-        public override void draw(SpriteBatch b)
-        {
-            b.Draw(Game1.fadeToBlackRect, Game1.graphics.GraphicsDevice.Viewport.Bounds, Color.Black * 0.75f);
-
-            Game1.drawDialogueBox(this.xPositionOnScreen, this.yPositionOnScreen, this.width, this.height, speaker: false, drawOnlyBox: true, r: 80, g: 123, b:186);
-            Game1.dayTimeMoneyBox.drawMoneyBox(b);
-
-            // Draw the custom store BG
-            b.Draw(JojaResources.GetJojaSiteBackground(), new Vector2(this.xPositionOnScreen + 32, this.yPositionOnScreen + 100), new Rectangle(0, 0, 1008, 1194), Color.White, 0f, Vector2.Zero, scale, SpriteEffects.None, 1f);
-
-            // Draw the current unique amount of items in cart
-            drawCartQuantity(930, 125, sourceSheet, new Rectangle(0, 272, 30, 45)).draw(b);
-
-            // Draw the clickables
-            foreach (ClickableTextureComponent clickable in clickables)
-            {
-                clickable.draw(b);
-            }
-
-            IClickableMenu.drawTextureBox(b, sourceSheet, new Rectangle(0, 896, 24, 24), scrollBarRunner.X, scrollBarRunner.Y, scrollBarRunner.Width, scrollBarRunner.Height, Color.White, 1f, drawShadow: false);
-            scrollBar.draw(b);
-
-            // Draw the for sale buttons
-            foreach (ClickableComponent button in forSaleButtons)
-            {
-                int buttonPosition = forSaleButtons.IndexOf(button) + (currentItemIndex * 2);
-                if (buttonPosition >= forSale.Count)
-                {
-                    continue;
-                }
-
-                IClickableMenu.drawTextureBox(b, sourceSheet, new Rectangle(0, 768, 60, 60), button.bounds.X, button.bounds.Y, button.bounds.Width, button.bounds.Height, Color.White, scale, drawShadow: false);
-
-                // Get the quantity that is in the cart (if any)
-                int currentlyInCart = 0;
-                if (itemsInCart.ContainsKey(forSale[buttonPosition]))
-                {
-                    currentlyInCart = itemsInCart[forSale[buttonPosition]][1];
-                }
-
-                // Draw the item for sale
-                forSale[buttonPosition].drawInMenu(b, new Vector2(button.bounds.X + 32 - 8, button.bounds.Y + 15), scale, 1f, 0.9f, StackDrawType.Draw, Color.White * (itemsInCart.Count < maxUniqueCartItems || currentlyInCart > 0 ? 1f : 0.25f), drawShadow: true);
-
-                // Draw the quantity in the cart
-                SpriteText.drawString(b, $"In Cart: {currentlyInCart}", button.bounds.X + 96 + 8, button.bounds.Y + 35, 999999, -1, 999999, 1f, 0.88f, junimoText: false, -1, "", 8);
-
-                // Draw the price
-                string price = forSale[buttonPosition].salePrice() + " ";
-                SpriteText.drawString(b, price, button.bounds.Right - SpriteText.getWidthOfString(price) - 30, button.bounds.Bottom - 55, 999999, -1, 999999, (itemsInCart.Count < maxUniqueCartItems || currentlyInCart > 0 ? 1f : 0.5f), 0.88f, junimoText: false, -1, "", 1);
-                Utility.drawWithShadow(b, Game1.mouseCursors, new Vector2(button.bounds.Right - 52, button.bounds.Bottom - 50), new Rectangle(193, 373, 9, 10), Color.White * (itemsInCart.Count < maxUniqueCartItems || currentlyInCart > 0 ? 1f : 0.25f), 0f, Vector2.Zero, 4f, flipped: false, 1f, -1, -1, 0f);
-            }
-
-            this.upperRightCloseButton.draw(b);
-            this.drawMouse(b);
         }
 
         public void drawClickable(string identifier, int x, int y, Texture2D sourceTexture, Rectangle sourceRect)
