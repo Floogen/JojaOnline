@@ -24,6 +24,7 @@ namespace JojaOnline.JojaOnline.UI
 
         private Rectangle scrollBarRunner;
         private ClickableTextureComponent scrollBar;
+        private ClickableTextureComponent checkoutButton;
         private List<ClickableTextureComponent> clickables = new List<ClickableTextureComponent>();
 
         private bool scrolling = false;
@@ -34,7 +35,6 @@ namespace JojaOnline.JojaOnline.UI
         private int hoverPrice = -1;
         private string hoverText = "";
         private string boldTitleText = "";
-        private string descriptionText = "";
 
         // Random sale item related
         private static int randomSaleItemId = -1;
@@ -63,7 +63,8 @@ namespace JojaOnline.JojaOnline.UI
                 this.forSale.Add(j);
                 this.itemPriceAndStock.Add(j, new int[2]
                 {
-                    j.salePrice(),
+                    // Increase sale price by 25% without membership
+                    Game1.MasterPlayer.mailReceived.Contains("JojaMember") ? j.salePrice() : j.salePrice() + (j.salePrice() / 4),
                     j.maximumStackSize()
                 });
             }
@@ -93,7 +94,7 @@ namespace JojaOnline.JojaOnline.UI
             }
 
             // Scroll bar
-            scrollBar = new ClickableTextureComponent(new Rectangle(1267, 770, 25, 40), sourceSheet, new Rectangle(0, 848, 24, 40), 1f);
+            scrollBar = new ClickableTextureComponent(new Rectangle(1267, 770, 25, 40), sourceSheet, new Rectangle(0, 848, 24, 40), scale);
             scrollBarRunner = new Rectangle(scrollBar.bounds.X, scrollBar.bounds.Y, scrollBar.bounds.Width, 535);
 
             // Joja Ads
@@ -103,7 +104,9 @@ namespace JojaOnline.JojaOnline.UI
             // Banner, logos
             drawClickable("jojaLogo", 35, 105, sourceSheet, new Rectangle(0, 0, 336, 128));
             drawClickable("jojaMotto", 435, 150, sourceSheet, new Rectangle(0, 144, 384, 64));
-            drawClickable("shoppingCart", 900, 150, sourceSheet, new Rectangle(0, 208, 80, 48));
+
+            // Checkout button
+            checkoutButton = new ClickableTextureComponent(new Rectangle(1640, 200, 78, 48), sourceSheet, new Rectangle(0, 208, 78, 48), scale);
 
             // Pick an item for sale
             randomSaleItem = itemsToSell[randomSaleItemId];
@@ -147,6 +150,9 @@ namespace JojaOnline.JojaOnline.UI
             {
                 clickable.draw(b);
             }
+
+            // Draw the checkout button
+            checkoutButton.draw(b);
 
             // Draw the scroll bar
             IClickableMenu.drawTextureBox(b, sourceSheet, new Rectangle(0, 896, 24, 24), scrollBarRunner.X, scrollBarRunner.Y, scrollBarRunner.Width, scrollBarRunner.Height, Color.White, scale, drawShadow: false);
@@ -214,7 +220,7 @@ namespace JojaOnline.JojaOnline.UI
                     IClickableMenu.drawToolTip(b, this.hoverText, this.boldTitleText, this.hoveredItem as Item, false, -1, 0, -1, -1, null, (this.hoverPrice > 0) ? this.hoverPrice : (-1));
                 }
             }
-
+            
             this.upperRightCloseButton.draw(b);
             this.drawMouse(b);
         }
@@ -280,6 +286,10 @@ namespace JojaOnline.JojaOnline.UI
 
                 this.setScrollBarToCurrentIndex();
                 this.updateSaleButtonNeighbors();
+            }
+            else if (checkoutButton.containsPoint(x, y))
+            {
+                this.monitor.Log("Starting checkout...");
             }
             else
             {
@@ -406,7 +416,7 @@ namespace JojaOnline.JojaOnline.UI
             {
                 sourceRect = new Rectangle(0, 320, 53, 19);
                 x -= 12;
-                y += 23;
+                y += 20;
             }
 
 
@@ -488,7 +498,6 @@ namespace JojaOnline.JojaOnline.UI
         public override void performHoverAction(int x, int y)
         {
             base.performHoverAction(x, y);
-            this.descriptionText = "";
             this.hoverText = "";
             this.hoveredItem = null;
             this.hoverPrice = -1;
