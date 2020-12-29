@@ -11,9 +11,22 @@ namespace JojaOnline
 {
     public static class JojaResources
     {
+        private static IMonitor modMonitor;
+
         private static Texture2D jojaMailBackground;
         private static Texture2D jojaSiteBackground;
         private static Texture2D jojaSiteSpriteSheet;
+
+        public static void LoadMonitor(IMonitor monitor)
+        {
+            modMonitor = monitor;
+        }
+
+        public static IMonitor GetMonitor()
+        {
+            return modMonitor;
+        }
+
 
         public static void LoadTextures(IModHelper helper)
         {
