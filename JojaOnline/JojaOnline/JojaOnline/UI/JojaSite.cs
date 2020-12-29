@@ -20,13 +20,29 @@ namespace JojaOnline.JojaOnline.UI
         private readonly Texture2D sourceSheet = JojaResources.GetJojaSiteSpriteSheet();
         private readonly IMonitor monitor = JojaResources.GetMonitor();
 
+        private List<ClickableComponent> forSaleButtons = new List<ClickableComponent>();
+
         private Rectangle scrollBarRunner;
         private ClickableTextureComponent scrollBar;
-        private List<ClickableComponent> forSaleButtons = new List<ClickableComponent>();
         private List<ClickableTextureComponent> clickables = new List<ClickableTextureComponent>();
 
         private bool scrolling = false;
         private int currentItemIndex = 0;
+
+        // Description related
+        private ISalable hoveredItem;
+        private int hoverPrice = -1;
+        private string hoverText = "";
+        private string boldTitleText = "";
+        private string descriptionText = "";
+
+        // Random sale item related
+        private static int randomSaleItemId = -1;
+        private static float randomSalePercentageOff = 0f;
+        private ISalable randomSaleItem;
+        private ClickableComponent randomSaleButton;
+
+        // Items for sale in shop
         private List<ISalable> forSale = new List<ISalable>();
 
         // Item: [price, quantity]
@@ -36,7 +52,8 @@ namespace JojaOnline.JojaOnline.UI
         public JojaSite(int uiWidth, int uiHeight) : base(Game1.uiViewport.Width / 2 - (uiWidth + IClickableMenu.borderWidth * 2) / 2, Game1.uiViewport.Height / 2 - (uiHeight + IClickableMenu.borderWidth * 2) / 2, uiWidth + IClickableMenu.borderWidth * 2, uiHeight + IClickableMenu.borderWidth * 2, showUpperRightCloseButton: true)
         {
             // Get the items to be sold
-            foreach (ISalable j in Utility.getJojaStock().Keys)
+            List<ISalable> itemsToSell = GetItemsToSell();
+            foreach (ISalable j in itemsToSell)
             {
                 if (j is StardewValley.Object && (bool)(j as StardewValley.Object).isRecipe)
                 {
@@ -75,10 +92,9 @@ namespace JojaOnline.JojaOnline.UI
                 });
             }
 
-
+            // Scroll bar
             scrollBar = new ClickableTextureComponent(new Rectangle(1267, 770, 25, 40), sourceSheet, new Rectangle(0, 848, 24, 40), 1f);
             scrollBarRunner = new Rectangle(scrollBar.bounds.X, scrollBar.bounds.Y, scrollBar.bounds.Width, 535);
-
 
             // Joja Ads
             drawClickable("jojaCanAd", 42, 248, sourceSheet, new Rectangle(608, 0, 208, 208));
@@ -89,14 +105,34 @@ namespace JojaOnline.JojaOnline.UI
             drawClickable("jojaMotto", 435, 150, sourceSheet, new Rectangle(0, 144, 384, 64));
             drawClickable("shoppingCart", 900, 150, sourceSheet, new Rectangle(0, 208, 80, 48));
 
+            // Pick an item for sale
+            randomSaleItem = itemsToSell[randomSaleItemId];
+            randomSaleButton = new ClickableComponent(new Rectangle(1225, 550, 104, 99), "randomSaleButton");
+
             // Override default close button position
             this.upperRightCloseButton = new ClickableTextureComponent(new Rectangle(this.xPositionOnScreen + this.width - 50, this.yPositionOnScreen + 70, 48, 48), Game1.mouseCursors, new Rectangle(337, 494, 12, 12), 4f);
         }
 
+        public static void PickRandomItemForDiscount()
+        {
+            // Set the random percentage
+            randomSalePercentageOff = Game1.random.Next(5, 50) / 100f;
+
+            // Set the item id to be sold at discount
+            randomSaleItemId = Game1.random.Next(GetItemsToSell().Count);
+        }
+
+        public static List<ISalable> GetItemsToSell()
+        {
+            return Utility.getJojaStock().Keys.ToList();
+        }
+
         public override void draw(SpriteBatch b)
         {
+            // Fade the area
             b.Draw(Game1.fadeToBlackRect, Game1.graphics.GraphicsDevice.Viewport.Bounds, Color.Black * 0.75f);
 
+            // Draw the main box, along with the money box
             Game1.drawDialogueBox(this.xPositionOnScreen, this.yPositionOnScreen, this.width, this.height, speaker: false, drawOnlyBox: true, r: 80, g: 123, b: 186);
             Game1.dayTimeMoneyBox.drawMoneyBox(b);
 
@@ -106,16 +142,21 @@ namespace JojaOnline.JojaOnline.UI
             // Draw the current unique amount of items in cart
             drawCartQuantity(930, 125, sourceSheet, new Rectangle(0, 272, 30, 45)).draw(b);
 
-            // Draw the clickables
+            // Draw the general clickables
             foreach (ClickableTextureComponent clickable in clickables)
             {
                 clickable.draw(b);
             }
 
-            IClickableMenu.drawTextureBox(b, sourceSheet, new Rectangle(0, 896, 24, 24), scrollBarRunner.X, scrollBarRunner.Y, scrollBarRunner.Width, scrollBarRunner.Height, Color.White, 1f, drawShadow: false);
+            // Draw the scroll bar
+            IClickableMenu.drawTextureBox(b, sourceSheet, new Rectangle(0, 896, 24, 24), scrollBarRunner.X, scrollBarRunner.Y, scrollBarRunner.Width, scrollBarRunner.Height, Color.White, scale, drawShadow: false);
             scrollBar.draw(b);
 
-            // Draw the for sale buttons
+            // Draw the sale button
+            IClickableMenu.drawTextureBox(b, sourceSheet, new Rectangle(0, 768, 60, 60), randomSaleButton.bounds.X, randomSaleButton.bounds.Y, randomSaleButton.bounds.Width, randomSaleButton.bounds.Height, Color.White, scale, drawShadow: false);
+            randomSaleItem.drawInMenu(b, new Vector2(1245, 565), scale, 1f, 0.9f, StackDrawType.Draw, Color.White, drawShadow: true);
+
+            // Draw the individual store buttons
             foreach (ClickableComponent button in forSaleButtons)
             {
                 int buttonPosition = forSaleButtons.IndexOf(button) + (currentItemIndex * 2);
@@ -124,6 +165,7 @@ namespace JojaOnline.JojaOnline.UI
                     continue;
                 }
 
+                // Draw the button grid
                 IClickableMenu.drawTextureBox(b, sourceSheet, new Rectangle(0, 768, 60, 60), button.bounds.X, button.bounds.Y, button.bounds.Width, button.bounds.Height, Color.White, scale, drawShadow: false);
 
                 // Get the quantity that is in the cart (if any)
@@ -139,10 +181,38 @@ namespace JojaOnline.JojaOnline.UI
                 // Draw the quantity in the cart
                 SpriteText.drawString(b, $"In Cart: {currentlyInCart}", button.bounds.X + 96 + 8, button.bounds.Y + 35, 999999, -1, 999999, 1f, 0.88f, junimoText: false, -1, "", 8);
 
-                // Draw the price
-                string price = forSale[buttonPosition].salePrice() + " ";
-                SpriteText.drawString(b, price, button.bounds.Right - SpriteText.getWidthOfString(price) - 30, button.bounds.Bottom - 55, 999999, -1, 999999, (itemsInCart.Count < maxUniqueCartItems || currentlyInCart > 0 ? 1f : 0.5f), 0.88f, junimoText: false, -1, "", 1);
-                Utility.drawWithShadow(b, Game1.mouseCursors, new Vector2(button.bounds.Right - 52, button.bounds.Bottom - 50), new Rectangle(193, 373, 9, 10), Color.White * (itemsInCart.Count < maxUniqueCartItems || currentlyInCart > 0 ? 1f : 0.25f), 0f, Vector2.Zero, 4f, flipped: false, 1f, -1, -1, 0f);
+                // Check if item is on sale, if so then add visual marker
+                if (forSale[buttonPosition] == randomSaleItem)
+                {
+                    // Draw sale marker
+                    IClickableMenu.drawTextureBox(b, sourceSheet, new Rectangle(0, 944, 77, 38), button.bounds.Right - 89, button.bounds.Y + 12, 77, 77, Color.White, scale, drawShadow: false);
+
+                    // Draw the (discounted) price
+                    string price = ((int) (forSale[buttonPosition].salePrice() - (forSale[buttonPosition].salePrice() * randomSalePercentageOff))) + " ";
+                    SpriteText.drawString(b, (randomSalePercentageOff * 100) + "% OFF", button.bounds.Left + 35, button.bounds.Bottom - 55, 999999, -1, 999999, (itemsInCart.Count < maxUniqueCartItems || currentlyInCart > 0 ? 1f : 0.5f), 0.88f, junimoText: false, -1, "", 7);
+                    SpriteText.drawString(b, price, button.bounds.Right - SpriteText.getWidthOfString(price) - 30, button.bounds.Bottom - 55, 999999, -1, 999999, (itemsInCart.Count < maxUniqueCartItems || currentlyInCart > 0 ? 1f : 0.5f), 0.88f, junimoText: false, -1, "", 7);
+                    Utility.drawWithShadow(b, Game1.mouseCursors, new Vector2(button.bounds.Right - 52, button.bounds.Bottom - 50), new Rectangle(193, 373, 9, 10), Color.White * (itemsInCart.Count < maxUniqueCartItems || currentlyInCart > 0 ? 1f : 0.25f), 0f, Vector2.Zero, 4f, flipped: false, 1f, -1, -1, 0f);
+                }
+                else
+                {
+                    // Draw the price
+                    string price = forSale[buttonPosition].salePrice() + " ";
+                    SpriteText.drawString(b, price, button.bounds.Right - SpriteText.getWidthOfString(price) - 30, button.bounds.Bottom - 55, 999999, -1, 999999, (itemsInCart.Count < maxUniqueCartItems || currentlyInCart > 0 ? 1f : 0.5f), 0.88f, junimoText: false, -1, "", 1);
+                    Utility.drawWithShadow(b, Game1.mouseCursors, new Vector2(button.bounds.Right - 52, button.bounds.Bottom - 50), new Rectangle(193, 373, 9, 10), Color.White * (itemsInCart.Count < maxUniqueCartItems || currentlyInCart > 0 ? 1f : 0.25f), 0f, Vector2.Zero, 4f, flipped: false, 1f, -1, -1, 0f);
+                }
+            }
+
+            // Draw the tooltip
+            if (!this.hoverText.Equals(""))
+            {
+                if (this.hoveredItem is StardewValley.Object && (bool)(this.hoveredItem as StardewValley.Object).isRecipe)
+                {
+                    IClickableMenu.drawToolTip(b, " ", this.boldTitleText, this.hoveredItem as Item, false, -1, 0, -1, -1, new CraftingRecipe(this.hoveredItem.Name.Replace(" Recipe", "")), (this.hoverPrice > 0) ? this.hoverPrice : (-1));
+                }
+                else
+                {
+                    IClickableMenu.drawToolTip(b, this.hoverText, this.boldTitleText, this.hoveredItem as Item, false, -1, 0, -1, -1, null, (this.hoverPrice > 0) ? this.hoverPrice : (-1));
+                }
             }
 
             this.upperRightCloseButton.draw(b);
@@ -178,12 +248,38 @@ namespace JojaOnline.JojaOnline.UI
                 return;
             }
 
-            // TODO: When sale sign is clicked, move the shop buttons below to the sale item (limit sale items stock?)
             // TODO: Check if cart is clicked, if so then open a new submenu containing overview of cost
             // Plus option of 2 day shipping (free) or next day (10% of total cost)
             if (this.scrollBar.containsPoint(x, y))
             {
                 this.scrolling = true;
+            }
+            else if (randomSaleButton.containsPoint(x, y))
+            {
+                // Move the forSaleButtons until the randomSaleItem is displayed
+                for (this.currentItemIndex = 0; this.currentItemIndex < Math.Max(0, this.forSale.Count - 12); currentItemIndex++)
+                {
+                    bool matchedItem = false;
+
+                    for (int i = 0; i < this.forSaleButtons.Count; i++)
+                    {
+                        int index = (this.currentItemIndex * 2) + i;
+
+                        if (this.forSale[index] == randomSaleItem)
+                        {
+                            matchedItem = true;
+                            break;
+                        }
+                    }
+
+                    if (matchedItem)
+                    {
+                        break;
+                    }
+                }
+
+                this.setScrollBarToCurrentIndex();
+                this.updateSaleButtonNeighbors();
             }
             else
             {
@@ -387,6 +483,33 @@ namespace JojaOnline.JojaOnline.UI
         {
             base.currentlySnappedComponent = base.getComponentWithID(3546);
             this.snapCursorToCurrentSnappedComponent();
+        }
+
+        public override void performHoverAction(int x, int y)
+        {
+            base.performHoverAction(x, y);
+            this.descriptionText = "";
+            this.hoverText = "";
+            this.hoveredItem = null;
+            this.hoverPrice = -1;
+            this.boldTitleText = "";
+
+            if (this.scrolling)
+            {
+                return;
+            }
+
+            for (int j = 0; j < this.forSaleButtons.Count; j++)
+            {
+                if (this.forSaleButtons[j].containsPoint(x, y))
+                {
+                    ISalable item = this.forSale[j + (currentItemIndex * 2)];
+                    this.hoverText = item.getDescription();
+                    this.boldTitleText = item.DisplayName;
+                    this.hoverPrice = item.salePrice();
+                    this.hoveredItem = item;
+                }
+            }
         }
     }
 }

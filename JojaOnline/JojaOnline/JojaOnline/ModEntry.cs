@@ -63,6 +63,9 @@ namespace JojaOnline
 
         private void OnDayStarting(object sender, DayStartedEventArgs e)
         {
+            this.Monitor.Log($"Picked a random item for discount at JojaOnline store.", LogLevel.Debug);
+            JojaSite.PickRandomItemForDiscount();
+
             this.Monitor.Log($"{Game1.player.Name} got mail!", LogLevel.Debug);
         }
     }
