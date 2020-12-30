@@ -19,6 +19,7 @@ namespace JojaOnline.JojaOnline.UI
         public readonly float scale = 1f;
         private readonly int nextDayShippingFee = 10;
         private readonly int maxUniqueCartItems = 10;
+        private readonly int buttonScrollingOffset = 8;
         private readonly Texture2D sourceSheet = JojaResources.GetJojaSiteSpriteSheet();
         private readonly Texture2D bannerAdSheet = JojaResources.GetJojaAdBanners();
         private readonly IMonitor monitor = JojaResources.GetMonitor();
@@ -148,7 +149,7 @@ namespace JojaOnline.JojaOnline.UI
 
         public static List<ISalable> GetItemsToSell()
         {
-            return Utility.getJojaStock().Keys.ToList();
+            return JojaResources.GetJojaOnlineStock().Keys.ToList();
         }
 
         public Rectangle GetScaledSourceBounds(int x, int y, int width, int height, bool offsetWithParentPosition = true)
@@ -377,10 +378,12 @@ namespace JojaOnline.JojaOnline.UI
                             // Display order success dialog
                             if (isNextDayShipping)
                             {
+                                Game1.player.Money = Game1.player.Money - (itemsInCart.Keys.Sum(i => i.Stack * itemsInCart[i][0]) + (itemsInCart.Keys.Sum(i => i.Stack * itemsInCart[i][0]) / nextDayShippingFee));
                                 Game1.activeClickableMenu = new DialogueBox("Your order has been placed! It will arrive tomorrow.");
                             }
                             else
                             {
+                                Game1.player.Money = Game1.player.Money - itemsInCart.Keys.Sum(i => i.Stack * itemsInCart[i][0]);
                                 Game1.activeClickableMenu = new DialogueBox("Your order has been placed! It will arrive in 2 days.");
                             }
                         }
@@ -410,7 +413,7 @@ namespace JojaOnline.JojaOnline.UI
             else if (randomSaleButton.containsPoint(x, y))
             {
                 // Move the forSaleButtons until the randomSaleItem is displayed
-                for (this.currentItemIndex = 0; this.currentItemIndex < Math.Max(0, this.forSale.Count - 12); currentItemIndex++)
+                for (this.currentItemIndex = 0; this.currentItemIndex < Math.Max(0, this.forSale.Count - buttonScrollingOffset); currentItemIndex++)
                 {
                     bool matchedItem = false;
 
@@ -493,7 +496,7 @@ namespace JojaOnline.JojaOnline.UI
                 int y2 = this.scrollBar.bounds.Y;
                 this.scrollBar.bounds.Y = Math.Min(scrollBarRunner.Bottom - 35, Math.Max(y, scrollBarRunner.Top));
                 float percentage = (float)(y - this.scrollBarRunner.Y) / (float)this.scrollBarRunner.Height;
-                this.currentItemIndex = Math.Min(this.forSale.Count - 12, Math.Max(0, (int)((float)this.forSale.Count * percentage)));
+                this.currentItemIndex = Math.Min((this.forSale.Count - buttonScrollingOffset) / 2, Math.Max(0, (int)(((float)this.forSale.Count / 2) * percentage)));
                 this.updateSaleButtonNeighbors();
             }
         }
@@ -588,7 +591,7 @@ namespace JojaOnline.JojaOnline.UI
                 this.updateSaleButtonNeighbors();
                 Game1.playSound("shiny4");
             }
-            else if (direction < 0 && this.currentItemIndex < Math.Max(0, this.forSale.Count - 12))
+            else if (direction < 0 && this.currentItemIndex * 2 < Math.Max(0, this.forSale.Count - buttonScrollingOffset))
             {
                 this.currentItemIndex++;
                 this.setScrollBarToCurrentIndex();
@@ -601,8 +604,8 @@ namespace JojaOnline.JojaOnline.UI
         {
             if (forSale.Count > 0)
             {
-                this.scrollBar.bounds.Y = this.scrollBarRunner.Y + this.scrollBarRunner.Height / Math.Max(1, this.forSale.Count - 12) * this.currentItemIndex;
-                if (this.currentItemIndex == this.forSale.Count - 12)
+                this.scrollBar.bounds.Y = this.scrollBarRunner.Y + this.scrollBarRunner.Height / Math.Max(1, this.forSale.Count - buttonScrollingOffset) * (this.currentItemIndex * 2);
+                if (this.currentItemIndex * 2 == this.forSale.Count - buttonScrollingOffset)
                 {
                     this.scrollBar.bounds.Y = this.scrollBarRunner.Y + this.scrollBarRunner.Height - 35;
                 }
@@ -648,7 +651,6 @@ namespace JojaOnline.JojaOnline.UI
             base.performHoverAction(x, y);
             this.hoverText = "";
             this.hoveredItem = null;
-            this.hoverPrice = -1;
             this.boldTitleText = "";
 
             if (this.scrolling)
@@ -660,10 +662,14 @@ namespace JojaOnline.JojaOnline.UI
             {
                 if (this.forSaleButtons[j].containsPoint(x, y))
                 {
+                    if (j + (currentItemIndex * 2) >= forSale.Count)
+                    {
+                        return;
+                    }
+
                     ISalable item = this.forSale[j + (currentItemIndex * 2)];
                     this.hoverText = item.getDescription();
                     this.boldTitleText = item.DisplayName;
-                    this.hoverPrice = item.salePrice();
                     this.hoveredItem = item;
                 }
             }
