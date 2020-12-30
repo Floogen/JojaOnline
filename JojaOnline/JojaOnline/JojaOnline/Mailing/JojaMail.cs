@@ -1,13 +1,10 @@
 ﻿using MailFrameworkMod;
-using Microsoft.Xna.Framework;
 using StardewModdingAPI;
 using StardewValley;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace JojaOnline.JojaOnline.Mailing
 {
