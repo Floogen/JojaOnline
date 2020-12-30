@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using JojaOnline.JojaOnline.Mailing;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using StardewModdingAPI;
@@ -362,8 +363,32 @@ namespace JojaOnline.JojaOnline.UI
                 {
                     if (canAffordOrder)
                     {
-                        // Create mail order
+                        // Close this menu
+                        base.exitThisMenu();
 
+                        // Create mail order
+                        JojaMail jojaMail = new JojaMail(Game1.player, isNextDayShipping ? 1 : 2, itemsInCart.Keys.Select(i => i as Item).ToList());
+                        if (jojaMail.SendMail())
+                        {
+                            this.monitor.Log("Order dispatched via JojaMail", LogLevel.Debug);
+
+                            // Display order success dialog
+                            if (isNextDayShipping)
+                            {
+                                Game1.activeClickableMenu = new DialogueBox("Your order has been placed! It will arrive tomorrow.");
+                            }
+                            else
+                            {
+                                Game1.activeClickableMenu = new DialogueBox("Your order has been placed! It will arrive in 2 days.");
+                            }
+                        }
+                        else
+                        {
+                            this.monitor.Log("Issue ordering items, failed to dispatch JojaMail!", LogLevel.Error);
+
+                            // Display order error dialog
+                            Game1.activeClickableMenu = new DialogueBox($"Order failed to place! Please try again later.");
+                        }
                     }
                     else
                     {
@@ -376,7 +401,7 @@ namespace JojaOnline.JojaOnline.UI
                 return;
             }
 
-            if (this.scrollBar.containsPoint(x, y) && itemsInCart.Count > 0)
+            if (this.scrollBar.containsPoint(x, y))
             {
                 this.scrolling = true;
             }
@@ -407,7 +432,7 @@ namespace JojaOnline.JojaOnline.UI
                 this.setScrollBarToCurrentIndex();
                 this.updateSaleButtonNeighbors();
             }
-            else if (checkoutButton.containsPoint(x, y))
+            else if (checkoutButton.containsPoint(x, y) && itemsInCart.Count > 0)
             {
                 this.monitor.Log("Starting checkout...");
                 isCheckingOut = true;
