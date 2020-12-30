@@ -5,6 +5,7 @@
     <EnableHarmony>true</EnableHarmony>
     <EnableModZip>false</EnableModZip>
     <EnableModDeploy>false</EnableModDeploy>
+    <DisableFastUpToDateCheck>true</DisableFastUpToDateCheck>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{A850668C-F90F-40DB-9ADA-C6D6DA88D951}</ProjectGuid>
@@ -60,7 +61,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="JojaOnline\JojaResources.cs" />
-    <Compile Include="JojaOnline\MailData.cs" />
+    <Compile Include="JojaOnline\Mailing\JojaMail.cs" />
     <Compile Include="JojaOnline\ModEntry.cs" />
     <Compile Include="JojaOnline\Patches\FurniturePatch.cs" />
     <Compile Include="JojaOnline\UI\JojaSite.cs" />
@@ -81,6 +82,9 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
+    <Content Include="JojaOnline\assets\jojaCheckoutBG.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="JojaOnline\assets\jojaLetterBG.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
