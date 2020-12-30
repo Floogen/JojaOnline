@@ -15,19 +15,27 @@ namespace JojaOnline.JojaOnline.UI
 {
     public class JojaSite: IClickableMenu
     {
-        private readonly float scale = 1f;
+        public readonly float scale = 1f;
+        private readonly int nextDayShippingFee = 10;
         private readonly int maxUniqueCartItems = 10;
         private readonly Texture2D sourceSheet = JojaResources.GetJojaSiteSpriteSheet();
         private readonly IMonitor monitor = JojaResources.GetMonitor();
 
+        private Rectangle scrollBarRunner;
+        private ClickableComponent nextDayShippingButton;
+        private ClickableComponent twoDayShippingButton;
+        private ClickableComponent purchaseButton;
         private List<ClickableComponent> forSaleButtons = new List<ClickableComponent>();
 
-        private Rectangle scrollBarRunner;
         private ClickableTextureComponent scrollBar;
+        private ClickableTextureComponent cancelButton;
         private ClickableTextureComponent checkoutButton;
         private List<ClickableTextureComponent> clickables = new List<ClickableTextureComponent>();
 
         private bool scrolling = false;
+        private bool isCheckingOut = false;
+        private bool isNextDayShipping = false;
+        private bool canAffordOrder = false;
         private int currentItemIndex = 0;
 
         // Description related
@@ -80,13 +88,13 @@ namespace JojaOnline.JojaOnline.UI
             // Draw the clickables (buttons, etc)
             for (int i = 0; i < 4; i++)
             {
-                this.forSaleButtons.Add(new ClickableComponent(new Rectangle(775 + 16, 750 + 16 + i * ((this.height - 256) / 8), (this.width - 128) / 2, (this.height - 256) / 8 + 4), string.Concat(i))
+                this.forSaleButtons.Add(new ClickableComponent(GetScaledSourceBounds(35 + 16, 695 + 16 + i * ((this.height - 256) / 8), (this.width - 128) / 2, (this.height - 256) / 8 + 4), string.Concat(i))
                 {
                     myID = i + 3546,
                     fullyImmutable = true
                 });
 
-                this.forSaleButtons.Add(new ClickableComponent(new Rectangle(800 + 16 + ((this.width - 128) / 2), 750 + 16 + i * ((this.height - 256) / 8), (this.width - 128) / 2, (this.height - 256) / 8 + 4), string.Concat(i))
+                this.forSaleButtons.Add(new ClickableComponent(GetScaledSourceBounds(60 + 16 + ((this.width - 128) / 2), 695 + 16 + i * ((this.height - 256) / 8), (this.width - 128) / 2, (this.height - 256) / 8 + 4), string.Concat(i))
                 {
                     myID = (7 - i) + 3546,
                     fullyImmutable = true
@@ -94,7 +102,7 @@ namespace JojaOnline.JojaOnline.UI
             }
 
             // Scroll bar
-            scrollBar = new ClickableTextureComponent(new Rectangle(1267, 770, 25, 40), sourceSheet, new Rectangle(0, 848, 24, 40), scale);
+            scrollBar = new ClickableTextureComponent(GetScaledSourceBounds(527, 715, 25, 40), sourceSheet, new Rectangle(0, 848, 24, 40), scale);
             scrollBarRunner = new Rectangle(scrollBar.bounds.X, scrollBar.bounds.Y, scrollBar.bounds.Width, 535);
 
             // Joja Ads
@@ -106,11 +114,21 @@ namespace JojaOnline.JojaOnline.UI
             drawClickable("jojaMotto", 435, 150, sourceSheet, new Rectangle(0, 144, 384, 64));
 
             // Checkout button
-            checkoutButton = new ClickableTextureComponent(new Rectangle(1640, 200, 78, 48), sourceSheet, new Rectangle(0, 208, 78, 48), scale);
+            checkoutButton = new ClickableTextureComponent(GetScaledSourceBounds(900, 145, 78, 48), sourceSheet, new Rectangle(0, 208, 78, 48), scale);
+
+            // Cancel button
+            cancelButton = new ClickableTextureComponent(GetScaledSourceBounds(45, 110, 32, 32), sourceSheet, new Rectangle(0, 1088, 32, 32), scale);
+
+            // Shipping option buttons
+            nextDayShippingButton = new ClickableComponent(GetScaledSourceBounds(79, this.height - 150, (int)Game1.dialogueFont.MeasureString($"Next Day (+{nextDayShippingFee}%)").X + 15, (int)Game1.dialogueFont.MeasureString($"Next Day (+{nextDayShippingFee}%)").Y + 24), "");
+            twoDayShippingButton = new ClickableComponent(GetScaledSourceBounds(79, this.height - 235, (int)Game1.dialogueFont.MeasureString($"Two Day (FREE)").X + 24, (int)Game1.dialogueFont.MeasureString($"Two Day (FREE)").Y + 24), "");
+
+            // Purchase button
+            purchaseButton = new ClickableComponent(GetScaledSourceBounds(this.width - (int)Game1.dialogueFont.MeasureString($"Purchase Order").X - 125, this.height - 115, (int)Game1.dialogueFont.MeasureString($"Purchase Order").X + 24, (int)Game1.dialogueFont.MeasureString($"Purchase Order").Y + 24), "");
 
             // Pick an item for sale
             randomSaleItem = itemsToSell[randomSaleItemId];
-            randomSaleButton = new ClickableComponent(new Rectangle(1225, 550, 104, 99), "randomSaleButton");
+            randomSaleButton = new ClickableComponent(GetScaledSourceBounds(485, 495, 104, 99), "randomSaleButton");
 
             // Override default close button position
             this.upperRightCloseButton = new ClickableTextureComponent(new Rectangle(this.xPositionOnScreen + this.width - 50, this.yPositionOnScreen + 70, 48, 48), Game1.mouseCursors, new Rectangle(337, 494, 12, 12), 4f);
@@ -130,6 +148,16 @@ namespace JojaOnline.JojaOnline.UI
             return Utility.getJojaStock().Keys.ToList();
         }
 
+        public Rectangle GetScaledSourceBounds(int x, int y, int width, int height, bool offsetWithParentPosition = true)
+        {
+            if (offsetWithParentPosition)
+            {
+                return new Rectangle((int)((this.xPositionOnScreen + x) * scale), (int)((this.yPositionOnScreen + y) * scale), (int)(width * scale), (int)(height * scale));
+            }
+
+            return new Rectangle(x, y, width, height);
+        }
+
         public override void draw(SpriteBatch b)
         {
             // Fade the area
@@ -138,6 +166,68 @@ namespace JojaOnline.JojaOnline.UI
             // Draw the main box, along with the money box
             Game1.drawDialogueBox(this.xPositionOnScreen, this.yPositionOnScreen, this.width, this.height, speaker: false, drawOnlyBox: true, r: 80, g: 123, b: 186);
             Game1.dayTimeMoneyBox.drawMoneyBox(b);
+
+            // See if we're checking out
+            if (isCheckingOut)
+            {
+                b.Draw(JojaResources.GetJojaCheckoutBackground(), new Vector2(this.xPositionOnScreen + 32, this.yPositionOnScreen + 100), new Rectangle(0, 0, 1008, 1194), Color.White, 0f, Vector2.Zero, scale, SpriteEffects.None, 1f);
+
+                // Draw cancel button
+                cancelButton.draw(b);
+
+                // Draw item icon, name and quantity
+                int subTotal = 0;
+                int stackCount = 0;
+                int uniqueItemCount = 1;
+                foreach (ISalable item in itemsInCart.Keys)
+                {
+                    // Draw item
+                    item.Stack = itemsInCart[item][1];
+                    item.drawInMenu(b, new Vector2(this.xPositionOnScreen + 80, (this.yPositionOnScreen + 180) + (75 * uniqueItemCount)), scale, 1f, 0.9f, StackDrawType.Hide, Color.White, drawShadow: false);
+
+                    // Draw name / quantity and price
+                    SpriteText.drawString(b, $"{item.DisplayName} x{item.Stack}", this.xPositionOnScreen + 160, (this.yPositionOnScreen + 190) + (75 * uniqueItemCount), 999999, -1, 999999, 1f, 0.88f, junimoText: false, -1, "", 4);
+
+                    int stackCost = item.Stack * itemsInCart[item][0];
+                    SpriteText.drawString(b, stackCost + "g", (this.xPositionOnScreen + this.width) - SpriteText.getWidthOfString(stackCost + "g") - 100, (this.yPositionOnScreen + 190) + (75 * uniqueItemCount), 999999, -1, 999999, 1f, 0.88f, junimoText: false, -1, "", 4);
+
+                    stackCount += item.Stack;
+                    subTotal += stackCost;
+                    uniqueItemCount++;
+                }
+
+                // Draw the subtotal
+                SpriteText.drawString(b, $"Subtotal: {subTotal}g", (this.xPositionOnScreen + this.width) - SpriteText.getWidthOfString($"Subtotal: {subTotal}g") - 100, this.yPositionOnScreen + this.height - 290, 999999, -1, 999999, 1f, 0.88f, junimoText: false, -1, "", 4);
+
+                // Draw the shipping options (free 2 day or next day with fee)
+                SpriteText.drawString(b, $"Shipping Options", this.xPositionOnScreen + 85, this.yPositionOnScreen + this.height - 290, 999999, -1, 999999, 1f, 0.88f, junimoText: false, -1, "", 4);
+                IClickableMenu.drawTextureBox(b, Game1.mouseCursors, new Rectangle(403, 373, 9, 9), this.twoDayShippingButton.bounds.X, this.twoDayShippingButton.bounds.Y, this.twoDayShippingButton.bounds.Width, this.twoDayShippingButton.bounds.Height, isNextDayShipping ? Color.White : Color.Gray, 4f * this.twoDayShippingButton.scale);
+                Utility.drawTextWithShadow(b, "Two Day (Free)", Game1.dialogueFont, new Vector2(this.twoDayShippingButton.bounds.X + 12, this.twoDayShippingButton.bounds.Y + (LocalizedContentManager.CurrentLanguageLatin ? 16 : 12)), Game1.textColor * (isNextDayShipping ? 1f : 0.25f));
+
+                IClickableMenu.drawTextureBox(b, Game1.mouseCursors, new Rectangle(403, 373, 9, 9), this.nextDayShippingButton.bounds.X, this.nextDayShippingButton.bounds.Y, this.nextDayShippingButton.bounds.Width, this.nextDayShippingButton.bounds.Height, isNextDayShipping ? Color.Gray : Color.White, 4f * this.nextDayShippingButton.scale);
+                Utility.drawTextWithShadow(b, $"Next Day (+{nextDayShippingFee}%)", Game1.dialogueFont, new Vector2(this.nextDayShippingButton.bounds.X + 12, this.nextDayShippingButton.bounds.Y + (LocalizedContentManager.CurrentLanguageLatin ? 16 : 12)), Game1.textColor * (isNextDayShipping ? 0.25f : 1f));
+
+                // Draw the shipping costs
+                int shippingCosts = isNextDayShipping ? subTotal / nextDayShippingFee : 0; 
+                SpriteText.drawString(b, $"Shipping:      ", (this.xPositionOnScreen + this.width) - SpriteText.getWidthOfString($"Shipping:      ") - 100, this.yPositionOnScreen + this.height - 230, 999999, -1, 999999, 1f, 0.88f, junimoText: false, -1, "", 4);
+                SpriteText.drawString(b, $"{shippingCosts}g", (this.xPositionOnScreen + this.width) - SpriteText.getWidthOfString($"{shippingCosts}g") - 100, this.yPositionOnScreen + this.height - 230, 999999, -1, 999999, 1f, 0.88f, junimoText: false, -1, "", 4);
+
+                // Draw the total
+                int total = subTotal + shippingCosts;
+                SpriteText.drawString(b, $"Total:      ", (this.xPositionOnScreen + this.width) - SpriteText.getWidthOfString($"Total:      ") - 100, this.yPositionOnScreen + this.height - 170, 999999, -1, 999999, 1f, 0.88f, junimoText: false, -1, "", 4);
+                SpriteText.drawString(b, $"{total}g", (this.xPositionOnScreen + this.width) - SpriteText.getWidthOfString($"{total}g") - 100, this.yPositionOnScreen + this.height - 170, 999999, -1, 999999, 1f, 0.88f, junimoText: false, -1, "", 4);
+
+                // Draw the purchase button
+                canAffordOrder = total <= Game1.player.Money ? true : false;
+                IClickableMenu.drawTextureBox(b, Game1.mouseCursors, new Rectangle(403, 373, 9, 9), this.purchaseButton.bounds.X, this.purchaseButton.bounds.Y, this.purchaseButton.bounds.Width, this.purchaseButton.bounds.Height, canAffordOrder ? Color.White : Color.Gray, 4f * this.purchaseButton.scale);
+                Utility.drawTextWithShadow(b, $"Purchase Order", Game1.dialogueFont, new Vector2(this.purchaseButton.bounds.X + 12, this.purchaseButton.bounds.Y + (LocalizedContentManager.CurrentLanguageLatin ? 16 : 12)), Game1.textColor * (canAffordOrder ? 1f : 0.25f));
+
+
+                // Draw the mouse
+                this.drawMouse(b);
+
+                return;
+            }
 
             // Draw the custom store BG
             b.Draw(JojaResources.GetJojaSiteBackground(), new Vector2(this.xPositionOnScreen + 32, this.yPositionOnScreen + 100), new Rectangle(0, 0, 1008, 1194), Color.White, 0f, Vector2.Zero, scale, SpriteEffects.None, 1f);
@@ -160,7 +250,7 @@ namespace JojaOnline.JojaOnline.UI
 
             // Draw the sale button
             IClickableMenu.drawTextureBox(b, sourceSheet, new Rectangle(0, 768, 60, 60), randomSaleButton.bounds.X, randomSaleButton.bounds.Y, randomSaleButton.bounds.Width, randomSaleButton.bounds.Height, Color.White, scale, drawShadow: false);
-            randomSaleItem.drawInMenu(b, new Vector2(1245, 565), scale, 1f, 0.9f, StackDrawType.Draw, Color.White, drawShadow: true);
+            randomSaleItem.drawInMenu(b, new Vector2(randomSaleButton.bounds.X + 20, randomSaleButton.bounds.Y + 15), scale, 1f, 0.9f, StackDrawType.Hide, Color.White, drawShadow: true);
 
             // Draw the individual store buttons
             foreach (ClickableComponent button in forSaleButtons)
@@ -182,10 +272,10 @@ namespace JojaOnline.JojaOnline.UI
                 }
 
                 // Draw the item for sale
-                forSale[buttonPosition].drawInMenu(b, new Vector2(button.bounds.X + 32 - 8, button.bounds.Y + 15), scale, 1f, 0.9f, StackDrawType.Draw, Color.White * (itemsInCart.Count < maxUniqueCartItems || currentlyInCart > 0 ? 1f : 0.25f), drawShadow: true);
+                forSale[buttonPosition].drawInMenu(b, new Vector2(button.bounds.X + 32 - 8, button.bounds.Y + 15), scale, 1f, 0.9f, StackDrawType.Hide, Color.White * (itemsInCart.Count < maxUniqueCartItems || currentlyInCart > 0 ? 1f : 0.25f), drawShadow: true);
 
                 // Draw the quantity in the cart
-                SpriteText.drawString(b, $"In Cart: {currentlyInCart}", button.bounds.X + 96 + 8, button.bounds.Y + 35, 999999, -1, 999999, 1f, 0.88f, junimoText: false, -1, "", 8);
+                SpriteText.drawString(b, $"In Cart: {currentlyInCart}", button.bounds.X + 96 + 8, button.bounds.Y + 35, 999999, -1, 999999, (itemsInCart.Count < maxUniqueCartItems || currentlyInCart > 0 ? 1f : 0.5f), 0.88f, junimoText: false, -1, "", 8);
 
                 // Check if item is on sale, if so then add visual marker
                 if (forSale[buttonPosition] == randomSaleItem)
@@ -254,9 +344,39 @@ namespace JojaOnline.JojaOnline.UI
                 return;
             }
 
-            // TODO: Check if cart is clicked, if so then open a new submenu containing overview of cost
-            // Plus option of 2 day shipping (free) or next day (10% of total cost)
-            if (this.scrollBar.containsPoint(x, y))
+            if (isCheckingOut)
+            {
+                if (cancelButton.containsPoint(x, y))
+                {
+                    isCheckingOut = false;
+                }
+                else if (nextDayShippingButton.containsPoint(x, y))
+                {
+                    isNextDayShipping = true;
+                }
+                else if (twoDayShippingButton.containsPoint(x, y))
+                {
+                    isNextDayShipping = false;
+                }
+                else if (purchaseButton.containsPoint(x, y))
+                {
+                    if (canAffordOrder)
+                    {
+                        // Create mail order
+
+                    }
+                    else
+                    {
+                        // Shake money bag
+                        Game1.dayTimeMoneyBox.moneyShakeTimer = 2000;
+                        Game1.playSound("cancel");
+                    }
+                }
+
+                return;
+            }
+
+            if (this.scrollBar.containsPoint(x, y) && itemsInCart.Count > 0)
             {
                 this.scrolling = true;
             }
@@ -290,6 +410,7 @@ namespace JojaOnline.JojaOnline.UI
             else if (checkoutButton.containsPoint(x, y))
             {
                 this.monitor.Log("Starting checkout...");
+                isCheckingOut = true;
             }
             else
             {
@@ -416,12 +537,12 @@ namespace JojaOnline.JojaOnline.UI
             {
                 sourceRect = new Rectangle(0, 320, 53, 19);
                 x -= 12;
-                y += 20;
+                y += 18;
             }
 
 
             // Create the ClickableTextureComponent object
-            Rectangle bounds = new Rectangle((int)((this.xPositionOnScreen + x) * scale), (int)((this.yPositionOnScreen + y) * scale), (int)(sourceRect.Width * scale), (int)(sourceRect.Height * scale));
+            Rectangle bounds = GetScaledSourceBounds(x, y, sourceRect.Width, sourceRect.Height);
             ClickableTextureComponent quantityIcon = new ClickableTextureComponent(bounds, sourceTexture, sourceRect, scale)
             {
                 name = "shoppingCartQuantity"
