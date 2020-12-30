@@ -1,17 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Reflection;
 using Harmony;
+using JojaOnline.JojaOnline.Mailing;
 using JojaOnline.JojaOnline.UI;
-using MailFrameworkMod;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using StardewModdingAPI;
 using StardewModdingAPI.Events;
-using StardewModdingAPI.Utilities;
-using StardewValley;
-using StardewValley.Objects;
 
 namespace JojaOnline
 {
@@ -35,13 +28,28 @@ namespace JojaOnline
             // Get the image resources needed for the mod
             JojaResources.LoadTextures(helper);
 
+            // Hook into the game's daily events
             helper.Events.GameLoop.DayStarted += this.OnDayStarting;
+            helper.Events.GameLoop.SaveLoaded += this.OnSaveLoaded;
+            helper.Events.GameLoop.Saved += this.OnSaved;
         }
 
         public void harmonyPatch()
         {
             var harmony = HarmonyInstance.Create(this.ModManifest.UniqueID);
             harmony.PatchAll(Assembly.GetExecutingAssembly());
+        }
+
+        private void OnSaveLoaded(object sender, SaveLoadedEventArgs e)
+        {
+            JojaMail.ProcessPlayerMailbox();
+            this.Monitor.Log($"Processed player's mailbox to check for any scheduled JojaMail orders.");
+        }
+
+        private void OnSaved(object sender, SavedEventArgs e)
+        {
+            JojaMail.ProcessPlayerMailbox();
+            this.Monitor.Log($"Processed player's mailbox to check for any scheduled JojaMail orders.");
         }
 
         private void OnDayStarting(object sender, DayStartedEventArgs e)

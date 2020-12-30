@@ -370,10 +370,9 @@ namespace JojaOnline.JojaOnline.UI
                         base.exitThisMenu();
 
                         // Create mail order
-                        JojaMail jojaMail = new JojaMail(Game1.player, isNextDayShipping ? 1 : 2, itemsInCart.Keys.Select(i => i as Item).ToList());
-                        if (jojaMail.SendMail())
+                        if (JojaMail.CreateMailOrder(Game1.player, isNextDayShipping ? 1 : 2, itemsInCart.Keys.Select(i => i as Item).ToList()))
                         {
-                            this.monitor.Log("Order dispatched via JojaMail", LogLevel.Debug);
+                            this.monitor.Log("Order placed via JojaMail!", LogLevel.Debug);
 
                             // Display order success dialog
                             if (isNextDayShipping)
