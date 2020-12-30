@@ -16,6 +16,7 @@ namespace JojaOnline
         private static Texture2D jojaMailBackground;
         private static Texture2D jojaSiteBackground;
         private static Texture2D jojaSiteSpriteSheet;
+        private static Texture2D jojaCheckoutBackground;
 
         public static void LoadMonitor(IMonitor monitor)
         {
@@ -38,6 +39,9 @@ namespace JojaOnline
 
             // Load in the JojaSite spritesheet
             jojaSiteSpriteSheet = helper.Content.Load<Texture2D>(Path.Combine("assets", "jojaSiteSprites.png"));
+
+            // Load JojaSite checkout background
+            jojaCheckoutBackground = helper.Content.Load<Texture2D>(Path.Combine("assets", "jojaCheckoutBG.png"));
         }
 
         public static Texture2D GetJojaMailBackground()
@@ -53,6 +57,11 @@ namespace JojaOnline
         public static Texture2D GetJojaSiteSpriteSheet()
         {
             return jojaSiteSpriteSheet;
+        }
+
+        public static Texture2D GetJojaCheckoutBackground()
+        {
+            return jojaCheckoutBackground;
         }
     }
 }
