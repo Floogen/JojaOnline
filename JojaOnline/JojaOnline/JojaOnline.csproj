@@ -68,7 +68,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="JojaOnline\assets\delivery_messages.json" />
     <None Include="manifest.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -82,6 +81,9 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
+    <Content Include="JojaOnline\assets\jojaBanners.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="JojaOnline\assets\jojaCheckoutBG.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

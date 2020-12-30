@@ -20,6 +20,7 @@ namespace JojaOnline.JojaOnline.UI
         private readonly int nextDayShippingFee = 10;
         private readonly int maxUniqueCartItems = 10;
         private readonly Texture2D sourceSheet = JojaResources.GetJojaSiteSpriteSheet();
+        private readonly Texture2D bannerAdSheet = JojaResources.GetJojaAdBanners();
         private readonly IMonitor monitor = JojaResources.GetMonitor();
 
         private Rectangle scrollBarRunner;
@@ -107,8 +108,9 @@ namespace JojaOnline.JojaOnline.UI
             scrollBarRunner = new Rectangle(scrollBar.bounds.X, scrollBar.bounds.Y, scrollBar.bounds.Width, 535);
 
             // Joja Ads
-            drawClickable("jojaCanAd", 42, 248, sourceSheet, new Rectangle(608, 0, 208, 208));
-            drawClickable("jojaJoinUsAd", 829, 260, sourceSheet, new Rectangle(0, 352, 201, 194));
+            drawClickable("jojaLeftAd", 42, 248, sourceSheet, new Rectangle(608, 0, 208, 208));
+            drawClickable("jojaRightAd", 829, 260, sourceSheet, new Rectangle(0, 352, 201, 194));
+            drawClickable("jojaBannerAd", 249, 247, bannerAdSheet, new Rectangle(0, (207 * Game1.random.Next(0, 4)), 574, 207));
 
             // Banner, logos
             drawClickable("jojaLogo", 35, 105, sourceSheet, new Rectangle(0, 0, 336, 128));
@@ -138,7 +140,7 @@ namespace JojaOnline.JojaOnline.UI
         public static void PickRandomItemForDiscount()
         {
             // Set the random percentage
-            randomSalePercentageOff = Game1.random.Next(5, 50) / 100f;
+            randomSalePercentageOff = Game1.random.Next(5, 35) / 100f;
 
             // Set the item id to be sold at discount
             randomSaleItemId = Game1.random.Next(GetItemsToSell().Count);
@@ -243,7 +245,7 @@ namespace JojaOnline.JojaOnline.UI
             }
 
             // Draw the checkout button
-            checkoutButton.draw(b);
+            checkoutButton.draw(b, itemsInCart.Count > 0 ? Color.White : Color.Black, 0.99f);
 
             // Draw the scroll bar
             IClickableMenu.drawTextureBox(b, sourceSheet, new Rectangle(0, 896, 24, 24), scrollBarRunner.X, scrollBarRunner.Y, scrollBarRunner.Width, scrollBarRunner.Height, Color.White, scale, drawShadow: false);
