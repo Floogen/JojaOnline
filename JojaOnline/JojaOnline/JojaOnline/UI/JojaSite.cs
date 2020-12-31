@@ -664,7 +664,6 @@ namespace JojaOnline.JojaOnline.UI
             if (forSale.Count > 0)
             {
                 this.scrollBar.bounds.Y = this.scrollBarRunner.Y + this.scrollBarRunner.Height / Math.Max(1, this.forSale.Count - buttonScrollingOffset + 1) * (this.currentItemIndex * 2);
-                monitor.Log($"{currentItemIndex} vs {this.forSale.Count - buttonScrollingOffset}");
                 if (this.currentItemIndex * 2 == this.forSale.Count - buttonScrollingOffset + (this.forSale.Count % 2 == 0 ? 0 : 1))
                 {
                     this.scrollBar.bounds.Y = this.scrollBarRunner.Y + this.scrollBarRunner.Height - 35;
