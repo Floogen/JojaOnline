@@ -44,7 +44,7 @@ namespace JojaOnline
 			// Add wood, stone and hardwood
 			AddToJojaOnlineStock(new Object(Vector2.Zero, 388, int.MaxValue));
 			AddToJojaOnlineStock(new Object(Vector2.Zero, 390, int.MaxValue));
-			AddToJojaOnlineStock(new Object(Vector2.Zero, 390, int.MaxValue), 500);
+			AddToJojaOnlineStock(new Object(Vector2.Zero, 709, int.MaxValue), 500);
 
 			// Add coal
 			AddToJojaOnlineStock(new Object(Vector2.Zero, 382, int.MaxValue));
