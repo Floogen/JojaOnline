@@ -361,14 +361,17 @@ namespace JojaOnline.JojaOnline.UI
                 if (cancelButton.containsPoint(x, y))
                 {
                     isCheckingOut = false;
+                    Game1.playSound("cancel");
                 }
                 else if (nextDayShippingButton.containsPoint(x, y))
                 {
                     isNextDayShipping = true;
+                    Game1.playSound("select");
                 }
                 else if (twoDayShippingButton.containsPoint(x, y))
                 {
                     isNextDayShipping = false;
+                    Game1.playSound("select");
                 }
                 else if (purchaseButton.containsPoint(x, y))
                 {
