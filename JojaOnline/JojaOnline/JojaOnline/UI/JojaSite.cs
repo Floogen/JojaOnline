@@ -65,8 +65,8 @@ namespace JojaOnline.JojaOnline.UI
         public JojaSite(int uiWidth, int uiHeight) : base(Game1.uiViewport.Width / 2 - (uiWidth + IClickableMenu.borderWidth * 2) / 2, Game1.uiViewport.Height / 2 - (uiHeight + IClickableMenu.borderWidth * 2) / 2, uiWidth + IClickableMenu.borderWidth * 2, uiHeight + IClickableMenu.borderWidth * 2, showUpperRightCloseButton: true)
         {
             // Get the items to be sold
-            List<ISalable> itemsToSell = GetItemsToSell();
-            foreach (ISalable j in itemsToSell)
+            Dictionary<ISalable, int[]> jojaOnlineStock = GetItemsToSell();
+            foreach (ISalable j in jojaOnlineStock.Keys)
             {
                 if (j is StardewValley.Object && (bool)(j as StardewValley.Object).isRecipe)
                 {
@@ -77,7 +77,7 @@ namespace JojaOnline.JojaOnline.UI
                 this.itemPriceAndStock.Add(j, new int[2]
                 {
                     // Increase sale price by 25% without membership
-                    Game1.MasterPlayer.mailReceived.Contains("JojaMember") ? j.salePrice() : j.salePrice() + (j.salePrice() / 4),
+                    Game1.MasterPlayer.mailReceived.Contains("JojaMember") ? jojaOnlineStock[j][0] : jojaOnlineStock[j][0] + (jojaOnlineStock[j][0] / 4),
                     j.maximumStackSize()
                 });
             }
@@ -133,7 +133,7 @@ namespace JojaOnline.JojaOnline.UI
             purchaseButton = new ClickableComponent(GetScaledSourceBounds(this.width - (int)Game1.dialogueFont.MeasureString($"Purchase Order").X - 125, this.height - 115, (int)Game1.dialogueFont.MeasureString($"Purchase Order").X + 24, (int)Game1.dialogueFont.MeasureString($"Purchase Order").Y + 24), "");
 
             // Pick an item for sale
-            randomSaleItem = itemsToSell[randomSaleItemId];
+            randomSaleItem = forSale[randomSaleItemId];
             randomSaleButton = new ClickableComponent(GetScaledSourceBounds(485, 495, 104, 99), "randomSaleButton");
 
             // Override default close button position
@@ -149,9 +149,9 @@ namespace JojaOnline.JojaOnline.UI
             randomSaleItemId = Game1.random.Next(GetItemsToSell().Count);
         }
 
-        public static List<ISalable> GetItemsToSell()
+        public static Dictionary<ISalable, int[]> GetItemsToSell()
         {
-            return JojaResources.GetJojaOnlineStock().Keys.ToList();
+            return JojaResources.GetJojaOnlineStock();
         }
 
         public Rectangle GetScaledSourceBounds(int x, int y, int width, int height, bool offsetWithParentPosition = true)
@@ -290,7 +290,7 @@ namespace JojaOnline.JojaOnline.UI
                     IClickableMenu.drawTextureBox(b, sourceSheet, new Rectangle(0, 944, 77, 38), button.bounds.Right - 89, button.bounds.Y + 12, 77, 77, Color.White, scale, drawShadow: false);
 
                     // Draw the (discounted) price
-                    string price = ((int)(forSale[buttonPosition].salePrice() - (forSale[buttonPosition].salePrice() * randomSalePercentageOff))) + " ";
+                    string price = ((int)(itemPriceAndStock[forSale[buttonPosition]][0] - (itemPriceAndStock[forSale[buttonPosition]][0] * randomSalePercentageOff))) + " ";
                     SpriteText.drawString(b, (randomSalePercentageOff * 100) + "% OFF", button.bounds.Left + 35, button.bounds.Bottom - 55, 999999, -1, 999999, (itemsInCart.Count < maxUniqueCartItems || currentlyInCart > 0 ? 1f : 0.5f), 0.88f, junimoText: false, -1, "", 7);
                     SpriteText.drawString(b, price, button.bounds.Right - SpriteText.getWidthOfString(price) - 30, button.bounds.Bottom - 55, 999999, -1, 999999, (itemsInCart.Count < maxUniqueCartItems || currentlyInCart > 0 ? 1f : 0.5f), 0.88f, junimoText: false, -1, "", 7);
                     Utility.drawWithShadow(b, Game1.mouseCursors, new Vector2(button.bounds.Right - 52, button.bounds.Bottom - 50), new Rectangle(193, 373, 9, 10), Color.White * (itemsInCart.Count < maxUniqueCartItems || currentlyInCart > 0 ? 1f : 0.25f), 0f, Vector2.Zero, 4f, flipped: false, 1f, -1, -1, 0f);
@@ -298,7 +298,7 @@ namespace JojaOnline.JojaOnline.UI
                 else
                 {
                     // Draw the price
-                    string price = forSale[buttonPosition].salePrice() + " ";
+                    string price = itemPriceAndStock[forSale[buttonPosition]][0] + " ";
                     SpriteText.drawString(b, price, button.bounds.Right - SpriteText.getWidthOfString(price) - 30, button.bounds.Bottom - 55, 999999, -1, 999999, (itemsInCart.Count < maxUniqueCartItems || currentlyInCart > 0 ? 1f : 0.5f), 0.88f, junimoText: false, -1, "", 1);
                     Utility.drawWithShadow(b, Game1.mouseCursors, new Vector2(button.bounds.Right - 52, button.bounds.Bottom - 50), new Rectangle(193, 373, 9, 10), Color.White * (itemsInCart.Count < maxUniqueCartItems || currentlyInCart > 0 ? 1f : 0.25f), 0f, Vector2.Zero, 4f, flipped: false, 1f, -1, -1, 0f);
                 }
