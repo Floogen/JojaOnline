@@ -393,6 +393,8 @@ namespace JojaOnline.JojaOnline.UI
                                 Game1.player.Money = Game1.player.Money - itemsInCart.Keys.Sum(i => i.Stack * itemsInCart[i][0]);
                                 Game1.activeClickableMenu = new DialogueBox("Your order has been placed! It will arrive in 2 days.");
                             }
+
+                            DelayedAction.playSoundAfterDelay("coin", 100);
                         }
                         else
                         {

@@ -8,7 +8,7 @@ using StardewModdingAPI.Events;
 
 namespace JojaOnline
 {
-    // NOTE: Compability issue with SpaceCore, must be v1.4.0 and below until they fix save serializer
+    // NOTE: Custom Furniture Compability issue with SpaceCore, must be v1.4.0 and below until they fix save serializer
     public class ModEntry : Mod
     {
         public override void Entry(IModHelper helper)

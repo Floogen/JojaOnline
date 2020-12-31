@@ -109,7 +109,7 @@ namespace JojaOnline.JojaOnline.Mailing
 
         public static void SendMail(Farmer recipient, string orderID, string message, List<Item> packagedItems)
         {
-            monitor.Log($"Prepping to send out mail order: {orderID}", LogLevel.Debug);
+            monitor.Log($"Sending out mail order {orderID}", LogLevel.Debug);
             Letter letter = new Letter(orderID, message, packagedItems, l => !recipient.mailReceived.Contains(l.Id), l => recipient.mailReceived.Add(l.Id))
             {
                 LetterTexture = JojaResources.GetJojaMailBackground(),
