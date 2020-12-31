@@ -241,6 +241,11 @@ namespace JojaOnline.JojaOnline.UI
             // Draw the current unique amount of items in cart
             drawCartQuantity(930, 125, sourceSheet, new Rectangle(0, 272, 30, 45)).draw(b);
 
+            // Draw the usage instructions
+            //IClickableMenu.drawTextureBox(b, sourceSheet, new Rectangle(144, 576, 76, 64), this.xPositionOnScreen + 100, this.yPositionOnScreen + 600, 76, 64, Color.White, scale, drawShadow: false);
+            //SpriteText.drawString(b, "to order", this.xPositionOnScreen + 100, this.yPositionOnScreen + 600, 999999, -1, 999999, 1f, 0.88f, junimoText: false, -1, "", 4);
+            //SpriteText.drawString(b, "to remove", (this.xPositionOnScreen + this.width) - SpriteText.getWidthOfString("Right Click to remove"), this.yPositionOnScreen + 600, 999999, -1, 999999, 1f, 0.88f, junimoText: false, -1, "", 4);
+
             // Draw the general clickables
             foreach (ClickableTextureComponent clickable in clickables)
             {
@@ -462,15 +467,15 @@ namespace JojaOnline.JojaOnline.UI
                             continue;
                         }
 
-                        // Skip if we're trying to buy more then what we can in a stack via mail
-                        if (itemsInCart.ContainsKey(this.forSale[index]) && itemsInCart[this.forSale[index]][1] >= this.forSale[index].maximumStackSize())
-                        {
-                            continue;
-                        }
-
                         // DEBUG: monitor.Log($"{index} | {this.forSale[index].Name}");
                         int toBuy = (!Game1.oldKBState.IsKeyDown(Keys.LeftShift)) ? 1 : 5;
                         toBuy = Math.Min(toBuy, this.forSale[index].maximumStackSize());
+
+                        // Skip if we're trying to buy more then what we can in a stack via mail
+                        if (itemsInCart.ContainsKey(this.forSale[index]) && (itemsInCart[this.forSale[index]][1] >= this.forSale[index].maximumStackSize() || itemsInCart[this.forSale[index]][1] + toBuy > this.forSale[index].maximumStackSize()))
+                        {
+                            continue;
+                        }
 
                         if (this.tryToPurchaseItem(this.forSale[index], toBuy, x, y, index))
                         {
@@ -524,15 +529,15 @@ namespace JojaOnline.JojaOnline.UI
                             continue;
                         }
 
-                        // Skip if we're trying to buy more then what we can in a stack via mail
-                        if (itemsInCart.ContainsKey(this.forSale[index]) && itemsInCart[this.forSale[index]][1] >= this.forSale[index].maximumStackSize())
-                        {
-                            continue;
-                        }
-
                         // DEBUG: monitor.Log($"{index} | {this.forSale[index].Name}");
                         int toBuy = (!Game1.oldKBState.IsKeyDown(Keys.LeftShift)) ? 1 : 5;
                         toBuy = Math.Min(toBuy, this.forSale[index].maximumStackSize());
+
+                        // Skip if we're trying to buy more then what we can in a stack via mail
+                        if (itemsInCart.ContainsKey(this.forSale[index]) && (itemsInCart[this.forSale[index]][1] >= this.forSale[index].maximumStackSize() || itemsInCart[this.forSale[index]][1] + toBuy > this.forSale[index].maximumStackSize()))
+                        {
+                            continue;
+                        }
 
                         if (this.tryToPurchaseItem(this.forSale[index], toBuy, x, y, index))
                         {
