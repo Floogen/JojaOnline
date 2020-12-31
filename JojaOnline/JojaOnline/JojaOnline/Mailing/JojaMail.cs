@@ -1,6 +1,7 @@
 ﻿using MailFrameworkMod;
 using StardewModdingAPI;
 using StardewValley;
+using StardewValley.Objects;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,9 +37,9 @@ namespace JojaOnline.JojaOnline.Mailing
                 int deliveryDate = daysToWait + Game1.dayOfMonth > 28 ? daysToWait : daysToWait + Game1.dayOfMonth;
 
                 // Need to save this mail data if it can't be delivered before shutdown
-                recipient.mailForTomorrow.Add($"{mailOrderID}[{message}][{deliveryDate}][{String.Join(", ", packagedItems.Select(i => $"[{i.parentSheetIndex}, {i.Stack}]"))}]");
+                recipient.mailForTomorrow.Add($"{mailOrderID}[{message}][{deliveryDate}][{String.Join(", ", packagedItems.Select(i => $"[{i.Name}, {i.parentSheetIndex}, {i.Stack}]"))}]");
 
-                monitor.Log($"JojaMail order [#{orderNumber}] created with delivery date of [{deliveryDate}]!", LogLevel.Debug);
+                monitor.Log($"JojaMail order [#{orderNumber}] created with delivery date of [{deliveryDate}] {String.Join(", ", packagedItems.Select(i => $"[{i.Name}, {i.parentSheetIndex}, {i.Stack}]"))}!", LogLevel.Debug);
             }
             catch (Exception ex)
             {
@@ -58,7 +59,7 @@ namespace JojaOnline.JojaOnline.Mailing
 
             // Get the mail coming in today, if it is a JojaOnline[DATE]#[ORDER_NUMBER] and [DATE] doesn't match today's [DATE], then addMailForTomorrow
             Regex mailRegex = new Regex(@"(?<orderID>JojaMailOrder\[#\d\d?\d?\d?\])\[(?<message>.*)\]\[(?<deliveryDate>\d\d?)\]\[(?<items>.*)\]", RegexOptions.IgnoreCase);
-            Regex itemStockRegex = new Regex(@"(?<idToStock>\d+, \d+)", RegexOptions.IgnoreCase);
+            Regex itemStockRegex = new Regex(@"(?<idToStock>\w+, \d+, \d+)", RegexOptions.IgnoreCase);
 
             List<string> jojaMailInMailbox = Game1.player.mailbox.Where(m => mailRegex.IsMatch(m)).ToList();
             foreach (string placeholder in jojaMailInMailbox)
@@ -92,12 +93,24 @@ namespace JojaOnline.JojaOnline.Mailing
                 {
                     int itemID = -1;
                     int stockCount = -1;
-                    if (!Int32.TryParse(itemMatch.Value.Split(',')[0], out itemID) || !Int32.TryParse(itemMatch.Value.Split(',')[1], out stockCount))
+                    if (!Int32.TryParse(itemMatch.Value.Split(',')[1], out itemID) || !Int32.TryParse(itemMatch.Value.Split(',')[2], out stockCount))
                     {
                         continue;
                     }
 
-                    itemsToPackage.Add(new StardewValley.Object(itemID, stockCount));
+                    string itemName = itemMatch.Value.Split(',')[0];
+                    if (itemName.Equals("Wallpaper"))
+                    {
+                        itemsToPackage.Add(new Wallpaper(itemID, false) { Stack = stockCount });
+                    }
+                    else if (itemName.Equals("Flooring"))
+                    {
+                        itemsToPackage.Add(new Wallpaper(itemID, true) { Stack = stockCount });
+                    }
+                    else
+                    {
+                        itemsToPackage.Add(new StardewValley.Object(itemID, stockCount));
+                    }
                 }
 
                 // Remove the placeholder mail from the mailbox, as we want MFM to handle it
