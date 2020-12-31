@@ -505,7 +505,8 @@ namespace JojaOnline.JojaOnline.UI
                 int y2 = this.scrollBar.bounds.Y;
                 this.scrollBar.bounds.Y = Math.Min(scrollBarRunner.Bottom - 35, Math.Max(y, scrollBarRunner.Top));
                 float percentage = (float)(y - this.scrollBarRunner.Y) / (float)this.scrollBarRunner.Height;
-                this.currentItemIndex = Math.Min((this.forSale.Count - buttonScrollingOffset) / 2, Math.Max(0, (int)(((float)this.forSale.Count / 2) * percentage)));
+                int correctedForSaleCount = (this.forSale.Count % 2 == 0 ? this.forSale.Count : this.forSale.Count + 1);
+                this.currentItemIndex = Math.Min((correctedForSaleCount - buttonScrollingOffset) / 2, Math.Max(0, (int)(((float)correctedForSaleCount / 2) * percentage)));
                 this.updateSaleButtonNeighbors();
             }
             else if (Game1.ticks >= lastTick + (60 * numberOfSecondsToDelayInput))
@@ -662,8 +663,8 @@ namespace JojaOnline.JojaOnline.UI
         {
             if (forSale.Count > 0)
             {
-                this.scrollBar.bounds.Y = this.scrollBarRunner.Y + this.scrollBarRunner.Height / Math.Max(1, this.forSale.Count - buttonScrollingOffset) * (this.currentItemIndex * 2);
-                if (this.currentItemIndex * 2 == this.forSale.Count - buttonScrollingOffset)
+                this.scrollBar.bounds.Y = this.scrollBarRunner.Y + this.scrollBarRunner.Height / Math.Max(1, this.forSale.Count - buttonScrollingOffset + 1) * (this.currentItemIndex * 2);
+                if (this.currentItemIndex == this.forSale.Count - buttonScrollingOffset)
                 {
                     this.scrollBar.bounds.Y = this.scrollBarRunner.Y + this.scrollBarRunner.Height - 35;
                 }
