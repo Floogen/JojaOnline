@@ -17,7 +17,7 @@ namespace JojaOnline
             {
                 if (Helper.ModRegistry.Get("spacechase0.SpaceCore").Manifest.Version.IsNewerThan("1.4.1"))
                 {
-                    throw new InvalidOperationException("JojaOnline is only compatible with SpaceCore v1.4.1 and below due a compatibility issue with PyTK. " +
+                    throw new InvalidOperationException("JojaOnline is only compatible with SpaceCore v1.4.1 and below due to a compatibility issue with PyTK. " +
                         "SpaceCore v1.4.1 works with Stardew Valley v1.5, so please use that if you wish to use this mod.");
                 }
             }
