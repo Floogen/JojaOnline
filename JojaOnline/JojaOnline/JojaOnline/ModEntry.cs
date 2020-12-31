@@ -8,11 +8,21 @@ using StardewModdingAPI.Events;
 
 namespace JojaOnline
 {
-    // NOTE: Custom Furniture Compability issue with SpaceCore, must be v1.4.0 and below until they fix save serializer
     public class ModEntry : Mod
     {
         public override void Entry(IModHelper helper)
         {
+            // PyTK (required for Custom Furniture) has compatibility issue with SpaceCore, must be v1.4.1 and below until SpaceCore or PyTK make the required changes
+            if (Helper.ModRegistry.IsLoaded("spacechase0.SpaceCore"))
+            {
+                if (Helper.ModRegistry.Get("spacechase0.SpaceCore").Manifest.Version.IsNewerThan("1.4.1"))
+                {
+                    throw new InvalidOperationException("JojaOnline is only compatible with SpaceCore v1.4.1 and below due a compatibility issue with PyTK. " +
+                        "SpaceCore v1.4.1 works with Stardew Valley v1.5, so please use that if you wish to use this mod.");
+                }
+            }
+
+            // Load our Harmony patches
             try
             {
                 harmonyPatch();
