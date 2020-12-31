@@ -12,7 +12,7 @@ using System.Linq;
 
 namespace JojaOnline.JojaOnline.UI
 {
-    public class JojaSite: IClickableMenu
+    public class JojaSite : IClickableMenu
     {
         public readonly float scale = 1f;
         private readonly int nextDayShippingFee = 10;
@@ -38,6 +38,10 @@ namespace JojaOnline.JojaOnline.UI
         private bool isNextDayShipping = false;
         private bool canAffordOrder = false;
         private int currentItemIndex = 0;
+
+        // Tick related
+        private float numberOfSecondsToDelayInput = 0.5f;
+        private int lastTick = Game1.ticks;
 
         // Description related
         private ISalable hoveredItem;
@@ -210,7 +214,7 @@ namespace JojaOnline.JojaOnline.UI
                 Utility.drawTextWithShadow(b, $"Next Day (+{nextDayShippingFee}%)", Game1.dialogueFont, new Vector2(this.nextDayShippingButton.bounds.X + 12, this.nextDayShippingButton.bounds.Y + (LocalizedContentManager.CurrentLanguageLatin ? 16 : 12)), Game1.textColor * (isNextDayShipping ? 0.25f : 1f));
 
                 // Draw the shipping costs
-                int shippingCosts = isNextDayShipping ? subTotal / nextDayShippingFee : 0; 
+                int shippingCosts = isNextDayShipping ? subTotal / nextDayShippingFee : 0;
                 SpriteText.drawString(b, $"Shipping:      ", (this.xPositionOnScreen + this.width) - SpriteText.getWidthOfString($"Shipping:      ") - 100, this.yPositionOnScreen + this.height - 230, 999999, -1, 999999, 1f, 0.88f, junimoText: false, -1, "", 4);
                 SpriteText.drawString(b, $"{shippingCosts}g", (this.xPositionOnScreen + this.width) - SpriteText.getWidthOfString($"{shippingCosts}g") - 100, this.yPositionOnScreen + this.height - 230, 999999, -1, 999999, 1f, 0.88f, junimoText: false, -1, "", 4);
 
@@ -286,7 +290,7 @@ namespace JojaOnline.JojaOnline.UI
                     IClickableMenu.drawTextureBox(b, sourceSheet, new Rectangle(0, 944, 77, 38), button.bounds.Right - 89, button.bounds.Y + 12, 77, 77, Color.White, scale, drawShadow: false);
 
                     // Draw the (discounted) price
-                    string price = ((int) (forSale[buttonPosition].salePrice() - (forSale[buttonPosition].salePrice() * randomSalePercentageOff))) + " ";
+                    string price = ((int)(forSale[buttonPosition].salePrice() - (forSale[buttonPosition].salePrice() * randomSalePercentageOff))) + " ";
                     SpriteText.drawString(b, (randomSalePercentageOff * 100) + "% OFF", button.bounds.Left + 35, button.bounds.Bottom - 55, 999999, -1, 999999, (itemsInCart.Count < maxUniqueCartItems || currentlyInCart > 0 ? 1f : 0.5f), 0.88f, junimoText: false, -1, "", 7);
                     SpriteText.drawString(b, price, button.bounds.Right - SpriteText.getWidthOfString(price) - 30, button.bounds.Bottom - 55, 999999, -1, 999999, (itemsInCart.Count < maxUniqueCartItems || currentlyInCart > 0 ? 1f : 0.5f), 0.88f, junimoText: false, -1, "", 7);
                     Utility.drawWithShadow(b, Game1.mouseCursors, new Vector2(button.bounds.Right - 52, button.bounds.Bottom - 50), new Rectangle(193, 373, 9, 10), Color.White * (itemsInCart.Count < maxUniqueCartItems || currentlyInCart > 0 ? 1f : 0.25f), 0f, Vector2.Zero, 4f, flipped: false, 1f, -1, -1, 0f);
@@ -312,7 +316,7 @@ namespace JojaOnline.JojaOnline.UI
                     IClickableMenu.drawToolTip(b, this.hoverText, this.boldTitleText, this.hoveredItem as Item, false, -1, 0, -1, -1, null, (this.hoverPrice > 0) ? this.hoverPrice : (-1));
                 }
             }
-            
+
             this.upperRightCloseButton.draw(b);
             this.drawMouse(b);
         }
@@ -332,7 +336,7 @@ namespace JojaOnline.JojaOnline.UI
             {
                 itemsInCart.Add(item, new int[] { this.itemPriceAndStock[item][0], numberToBuy });
             }
-            
+
             return true;
         }
 
@@ -340,6 +344,7 @@ namespace JojaOnline.JojaOnline.UI
         public override void receiveLeftClick(int x, int y, bool playSound = true)
         {
             base.receiveLeftClick(x, y, playSound);
+            lastTick = Game1.ticks;
 
             if (Game1.activeClickableMenu == null)
             {
@@ -477,7 +482,7 @@ namespace JojaOnline.JojaOnline.UI
                             Game1.playSound("cancel");
                         }
                     }
-                    
+
                     this.updateSaleButtonNeighbors();
                     this.setScrollBarToCurrentIndex();
                     return;
@@ -495,6 +500,55 @@ namespace JojaOnline.JojaOnline.UI
                 float percentage = (float)(y - this.scrollBarRunner.Y) / (float)this.scrollBarRunner.Height;
                 this.currentItemIndex = Math.Min((this.forSale.Count - buttonScrollingOffset) / 2, Math.Max(0, (int)(((float)this.forSale.Count / 2) * percentage)));
                 this.updateSaleButtonNeighbors();
+            }
+            else if (Game1.ticks >= lastTick + (60 * numberOfSecondsToDelayInput))
+            {
+                for (int i = 0; i < this.forSaleButtons.Count; i++)
+                {
+                    if (this.currentItemIndex + i >= this.forSale.Count || !this.forSaleButtons[i].containsPoint(x, y))
+                    {
+                        continue;
+                    }
+
+                    int index = (this.currentItemIndex * 2) + i;
+                    if (itemsInCart.Count >= maxUniqueCartItems && !itemsInCart.ContainsKey(this.forSale[index]))
+                    {
+                        continue;
+                    }
+
+                    if (this.forSale[index] != null)
+                    {
+                        // Skip if we're at max for the cart size
+                        if (itemsInCart.Count >= maxUniqueCartItems && !itemsInCart.ContainsKey(this.forSale[index]))
+                        {
+                            continue;
+                        }
+
+                        // Skip if we're trying to buy more then what we can in a stack via mail
+                        if (itemsInCart.ContainsKey(this.forSale[index]) && itemsInCart[this.forSale[index]][1] >= this.forSale[index].maximumStackSize())
+                        {
+                            continue;
+                        }
+
+                        // DEBUG: monitor.Log($"{index} | {this.forSale[index].Name}");
+                        int toBuy = (!Game1.oldKBState.IsKeyDown(Keys.LeftShift)) ? 1 : 5;
+                        toBuy = Math.Min(toBuy, this.forSale[index].maximumStackSize());
+
+                        if (this.tryToPurchaseItem(this.forSale[index], toBuy, x, y, index))
+                        {
+                            DelayedAction.playSoundAfterDelay("coin", 100);
+                        }
+                        else
+                        {
+                            Game1.dayTimeMoneyBox.moneyShakeTimer = 1000;
+                            Game1.playSound("cancel");
+                        }
+                    }
+
+                    this.updateSaleButtonNeighbors();
+                    this.setScrollBarToCurrentIndex();
+                    return;
+                }
             }
         }
 
