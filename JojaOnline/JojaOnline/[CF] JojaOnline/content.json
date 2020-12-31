@@ -8,7 +8,7 @@
       "id": 0,
       "texture": "assets/computer.png",
       "name": "Computer",
-      "description": "A Joja certified computer. Allows access to Joja Online.",
+      "description": "A Joja Co. certified computer. Gives access to Joja Online.",
       "type": "decor",
       "price": 3000,
       "index": 0,
