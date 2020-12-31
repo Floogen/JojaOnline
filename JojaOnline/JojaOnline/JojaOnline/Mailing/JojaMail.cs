@@ -80,8 +80,8 @@ namespace JojaOnline.JojaOnline.Mailing
                 {
                     monitor.Log($"Delaying {orderID} due to the delivery date [{deliveryDate}] not matching to today's date [{Game1.dayOfMonth}]", LogLevel.Debug);
 
-                    Game1.mailbox.Remove(placeholder);
-                    Game1.addMailForTomorrow(placeholder);
+                    Game1.player.mailbox.Remove(placeholder);
+                    Game1.player.mailForTomorrow.Add(placeholder);
 
                     continue;
                 }
@@ -101,7 +101,7 @@ namespace JojaOnline.JojaOnline.Mailing
                 }
 
                 // Remove the placeholder mail from the mailbox, as we want MFM to handle it
-                Game1.mailbox.Remove(placeholder);
+                Game1.player.mailbox.Remove(placeholder);
 
                 SendMail(Game1.player, orderID, jojaMatch.Groups["message"].ToString(), itemsToPackage);
             }
