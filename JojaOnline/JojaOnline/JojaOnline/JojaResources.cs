@@ -91,7 +91,7 @@ namespace JojaOnline
 			AddToJojaOnlineStock(new Object(Vector2.Zero, 178, int.MaxValue), 50);
 
 			// Add the current JojaMart items
-			Utility.getJojaStock().ToList().ForEach(x => jojaOnlineStock[x.Key] = x.Value);
+			Utility.getJojaStock().Where(x => !jojaOnlineStock.ContainsKey(x.Key)).ToList().ForEach(x => jojaOnlineStock.Add(x.Key, x.Value));
 
 			// If past year one, unlock all seeds (that aren't in the current season due to initial cloning)
 			if (Game1.year > 1)
