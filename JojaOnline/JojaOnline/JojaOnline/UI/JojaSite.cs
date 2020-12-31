@@ -389,15 +389,16 @@ namespace JojaOnline.JojaOnline.UI
                             if (isNextDayShipping)
                             {
                                 Game1.player.Money = Game1.player.Money - (itemsInCart.Keys.Sum(i => i.Stack * itemsInCart[i][0]) + (itemsInCart.Keys.Sum(i => i.Stack * itemsInCart[i][0]) / nextDayShippingFee));
-                                Game1.activeClickableMenu = new DialogueBox("Your order has been placed! It will arrive tomorrow.");
+                                Game1.activeClickableMenu = new DialogueBox("Your order has been placed! ^It will arrive tomorrow.");
                             }
                             else
                             {
                                 Game1.player.Money = Game1.player.Money - itemsInCart.Keys.Sum(i => i.Stack * itemsInCart[i][0]);
-                                Game1.activeClickableMenu = new DialogueBox("Your order has been placed! It will arrive in 2 days.");
+                                Game1.activeClickableMenu = new DialogueBox("Your order has been placed! ^It will arrive in 2 days.");
                             }
 
-                            DelayedAction.playSoundAfterDelay("coin", 100);
+                            Game1.playSound("moneyDial");
+                            Game1.dayTimeMoneyBox.moneyShakeTimer = 1000;
                         }
                         else
                         {
