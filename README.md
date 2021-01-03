@@ -1,3 +1,4 @@
+
 # JojaOnline
 
 **JojaOnline** is a mod for [Stardew Valley](http://stardewvalley.net/) that adds a new "online" shop. This mod also adds a computer furniture, which allows access to the new store.
@@ -6,7 +7,7 @@ The **JojaOnline** shop has access to all of JojaMart's items (regardless if you
 
 Additionally, **JojaOnline** has some extra items in stock from other local stores (such as wood, stone and fertilizers). The shop has also stocked some items not purchasable elsewhere like hardwood, but don't expect the prices to be cheap!
 
-The idea behind **JojaOnline** was to create a mod that gave players the ability to purchase items without having to spend their time trekking across town from store to store (at the cost of being more expensive). I also wanted it to fit within the world of Stardew Valley and what better way than to have the Joja Corporation providng the service!
+The idea behind **JojaOnline** was to create a mod that gave players the ability to purchase items without having to spend their time trekking across town from store to store (at the cost of being more expensive). I also wanted it to fit within the world of Stardew Valley and what better way than to have the Joja Corporation providing the service!
 
 ## Install
 1. [Install the latest version of SMAPI](https://smapi.io/).
@@ -43,7 +44,7 @@ After you confirm your purchase, your order will arrive by mail!
 The shop will randomly pick a stocked item everyday to put on sale. The sale price is picked at random between `minSalePercentage` and`maxSalePercentage`.
 
 ### ---Limitations---
-The maximum amount of **unique** items per order is 10. You can, however, have as many orders as you'd like. For example, you could place two seperate orders on the same day with next day shipping. Both orders would then arrive on the next morning.
+The maximum amount of **unique** items per order is 10. You can, however, have as many orders as you'd like. For example, you could place two separate orders on the same day with next day shipping. Both orders would then arrive on the next morning.
 
 ## Configurations
 This mod creates a `config.json` under the `...\JojaOnline\JojaOnline` folder. It contains a few options that you can modify to change how **JojaOnline** interacts with the game.
@@ -61,6 +62,6 @@ This mod creates a `config.json` under the `...\JojaOnline\JojaOnline` folder. I
  - [Mail Framework Mod](https://www.nexusmods.com/stardewvalley/mods/1536?tab=posts)
 
 ## Compatibility
-**JojaOnline** is compatible with Stardew v1.5+ for single-player (multiplayer is not supported).
+**JojaOnline** is compatible with Stardew Valley v1.5+ for single-player (multiplayer is not supported).
 
 Please note **JojaOnline** will not work with SpaceCore v1.5+ due to an issue with PyTk (required for Custom Furniture). If you must use SpaceCore, please use v1.4.0.
