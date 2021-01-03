@@ -382,7 +382,7 @@ namespace JojaOnline.JojaOnline.UI
                     Utility.drawWithShadow(b, Game1.mouseCursors, new Vector2(button.bounds.X + button.bounds.Width - (9 * coinScale) - (10 * scale), button.bounds.Y + button.bounds.Height - (10 * coinScale) - (7 * scale)), new Rectangle(193, 373, 9, 10), Color.White * (itemsInCart.Count < maxUniqueCartItems || currentlyInCart > 0 ? 1f : 0.25f), 0f, Vector2.Zero, coinScale, flipped: false, 1f, -1, -1, 0f);
 
                     // Draw sale marker
-                    Utility.drawWithShadow(b, sourceSheet, new Vector2(button.bounds.Right - (14 * scale * 4f) - (12 * scale), button.bounds.Y + (12 * scale)), new Rectangle(0, 80, 14, 7), Color.White, 0f, Vector2.Zero, scale * 4f, flipped: false, 1f, -1, -1, 0f);
+                    Utility.drawWithShadow(b, sourceSheet, new Vector2(button.bounds.Right - (14 * scale * 3f) - (12 * scale), button.bounds.Y + (12 * scale)), new Rectangle(0, 80, 14, 7), Color.White, 0f, Vector2.Zero, scale * 3f, flipped: false, 1f, -1, -1, 0f);
                 }
                 else
                 {
