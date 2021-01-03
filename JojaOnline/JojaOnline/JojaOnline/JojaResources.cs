@@ -36,7 +36,7 @@ namespace JojaOnline
 			return modMonitor;
 		}
 
-		public static void SetJojaOnlineStock()
+		public static void SetJojaOnlineStock(bool doStockAllSeedsBeforeYearOne)
 		{
 			// Clone the current stock
 			jojaOnlineStock = new Dictionary<ISalable, int[]>();
@@ -93,8 +93,8 @@ namespace JojaOnline
 			// Add the current JojaMart items
 			Utility.getJojaStock().Where(x => !jojaOnlineStock.ContainsKey(x.Key)).ToList().ForEach(x => jojaOnlineStock.Add(x.Key, x.Value));
 
-			// If past year one, unlock all seeds (that aren't in the current season due to initial cloning)
-			if (Game1.year > 1)
+			// If past year one (or doStockAllSeedsBeforeYearOne), unlock all seeds (that aren't in the current season due to initial cloning)
+			if (Game1.year > 1 || doStockAllSeedsBeforeYearOne)
 			{
 				modMonitor.Log("Loading JojaMart's stock for all seasons for JojaOnline", LogLevel.Debug);
 				if (!Game1.currentSeason.Equals("spring"))
