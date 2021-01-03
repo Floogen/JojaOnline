@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Reflection;
 using Harmony;
+using JojaOnline.JojaOnline;
 using JojaOnline.JojaOnline.Mailing;
 using JojaOnline.JojaOnline.UI;
 using StardewModdingAPI;
@@ -10,6 +11,8 @@ namespace JojaOnline
 {
     public class ModEntry : Mod
     {
+        private ModConfig config;
+
         public override void Entry(IModHelper helper)
         {
             // PyTK (required for Custom Furniture) has compatibility issue with SpaceCore, must be v1.4.1 and below until SpaceCore or PyTK make the required changes
@@ -31,6 +34,9 @@ namespace JojaOnline
             {
                 Monitor.Log($"Issue with Harmony patch: {e}", LogLevel.Error);
             }
+
+            // Load the config
+            this.config = helper.ReadConfig<ModConfig>();
 
             // Load the monitor
             JojaResources.LoadMonitor(this.Monitor);
@@ -65,9 +71,9 @@ namespace JojaOnline
         private void OnDayStarting(object sender, DayStartedEventArgs e)
         {
             // Modify JojaStock to include all year seed stock (if past year 1) & other items
-            JojaResources.SetJojaOnlineStock();
+            JojaResources.SetJojaOnlineStock(this.config.areAllSeedsAvailableBeforeYearOne);
 
-            JojaSite.PickRandomItemForDiscount();
+            JojaSite.PickRandomItemForDiscount(this.config.minSalePercentage, this.config.maxSalePercentage);
             this.Monitor.Log($"Picked a random item for discount at JojaOnline store.", LogLevel.Debug);
         }
     }
