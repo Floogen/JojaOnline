@@ -12,7 +12,7 @@ The idea behind **JojaOnline** was to create a mod that gave players the ability
 ## Install
 1. [Install the latest version of SMAPI](https://smapi.io/).
 2. [Install all the dependencies](#requirements).
-3. Install [this mod from Nexus mods](http://www.nexusmods.com/stardewvalley/mods/).
+3. Install [this mod from Nexus mods](http://www.nexusmods.com/stardewvalley/mods/7486).
 4. Run the game using SMAPI.
 
 ## Using JojaOnline
