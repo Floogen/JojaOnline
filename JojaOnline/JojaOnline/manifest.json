@@ -6,7 +6,7 @@
   "UniqueID": "PeacefulEnd.JojaOnline",
   "EntryDll": "JojaOnline.dll",
   "MinimumApiVersion": "3.0.0",
-  "UpdateKeys": [],
+  "UpdateKeys": [ "Nexus:7486" ],
   "Dependencies": [
    {
       "UniqueID": "DIGUS.MailFrameworkMod",
