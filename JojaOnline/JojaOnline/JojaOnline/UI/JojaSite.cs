@@ -148,10 +148,10 @@ namespace JojaOnline.JojaOnline.UI
             this.upperRightCloseButton = new ClickableTextureComponent(new Rectangle(this.xPositionOnScreen + this.width - 50, this.yPositionOnScreen + 70, (int)(scale * 48), (int)(scale * 48)), Game1.mouseCursors, new Rectangle(337, 494, 12, 12), scale * 4f);
         }
 
-        public static void PickRandomItemForDiscount()
+        public static void PickRandomItemForDiscount(int minSalePercentage, int maxSalePercentage)
         {
             // Set the random percentage
-            randomSalePercentageOff = Game1.random.Next(5, 35) / 100f;
+            randomSalePercentageOff = Game1.random.Next(minSalePercentage, maxSalePercentage) / 100f;
 
             // Set the item id to be sold at discount
             randomSaleItemId = Game1.random.Next(GetItemsToSell().Count);
