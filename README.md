@@ -17,11 +17,17 @@ The idea behind **JojaOnline** was to create a mod that gave players the ability
 ## Using JojaOnline
 Purchase the Computer furniture from your local carpenter store (Robin) and place it anywhere (presumably your home).
 
+![](screenshots/computer.png)
+
 Right click the Computer to open up **JojaOnline**.
 
 The items available for purchase will be displayed on the lower half of the screen. Left clicking an item will add it to your cart, while right clicking will *remove* items. You can shift click to add or remove multiple items, as well as hold down to add or remove until you let go.
 
+![](screenshots/menu.png)
+
 Once you are ready to purchase, click on the cart icon located on the top right and you'll be brought to the checkout screen. There you can see an overview of your selected items and the total cost. You are also able to pick a shipping method.
+
+![](screenshots/checkout.png)
 
 After you confirm your purchase, your order will arrive by mail!
 
