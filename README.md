@@ -11,7 +11,7 @@ The idea behind **JojaOnline** was to create a mod that gave players the ability
 ## Install
 1. [Install the latest version of SMAPI](https://smapi.io/).
 2. [Install all the dependencies](#requirements).
-3. Install [this mod from Nexus mods](http://www.nexusmods.com/stardewvalley/mods/533).
+3. Install [this mod from Nexus mods](http://www.nexusmods.com/stardewvalley/mods/).
 4. Run the game using SMAPI.
 
 ## Using JojaOnline
@@ -41,6 +41,9 @@ After you confirm your purchase, your order will arrive by mail!
 
 ### ---Daily Sale---
 The shop will randomly pick a stocked item everyday to put on sale. The sale price is picked at random between `minSalePercentage` and`maxSalePercentage`.
+
+### ---Limitations---
+The maximum amount of **unique** items per order is 10. You can, however, have as many orders as you'd like. For example, you could place two seperate orders on the same day with next day shipping. Both orders would then arrive on the next morning.
 
 ## Configurations
 This mod creates a `config.json` under the `...\JojaOnline\JojaOnline` folder. It contains a few options that you can modify to change how **JojaOnline** interacts with the game.
