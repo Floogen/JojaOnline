@@ -138,6 +138,9 @@ namespace JojaOnline
 					AddToJojaOnlineStock(new Object(Vector2.Zero, 425, int.MaxValue));
 				}
 			}
+
+			// Add Auto-Petter (normally only available from completing Joja route)
+			AddToJojaOnlineStock(new Object(Vector2.Zero, 272), 50000);
 		}
 
 		public static void AddToJojaOnlineStock(Object item, int salePrice = -1, int stock = -1)
