@@ -62,6 +62,8 @@
   <ItemGroup>
     <Compile Include="JojaOnline\JojaResources.cs" />
     <Compile Include="JojaOnline\Mailing\JojaMail.cs" />
+    <Compile Include="JojaOnline\Mobile\JojaMobile.cs" />
+    <Compile Include="JojaOnline\Mobile\IMobileApi.cs" />
     <Compile Include="JojaOnline\ModConfig.cs" />
     <Compile Include="JojaOnline\ModEntry.cs" />
     <Compile Include="JojaOnline\Patches\FurniturePatch.cs" />
@@ -89,6 +91,15 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="JojaOnline\assets\jojaLetterBG.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="JojaOnline\assets\mobile\jojaIcon.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="JojaOnline\assets\mobile\jojaMobileHorizontalBG.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="JojaOnline\assets\mobile\jojaMobileVerticalBG.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="JojaOnline\assets\jojaSiteSprites.png">

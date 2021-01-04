@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using JojaOnline.JojaOnline.UI;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StardewModdingAPI;
 using StardewValley;
@@ -21,10 +22,13 @@ namespace JojaOnline
 		private static Texture2D jojaMailBackground;
 		private static Texture2D jojaSiteBackground;
 		private static Texture2D jojaCheckoutBackground;
+		private static Texture2D jojaMobileVertBackground;
+		private static Texture2D jojaMobileHorzBackground;
 
 		private static Texture2D jojaSiteSpriteSheet;
-
 		private static Texture2D jojaAdBanners;
+		private static Texture2D jojaAppIcon;
+
 
 		public static void LoadMonitor(IMonitor monitor)
 		{
@@ -169,6 +173,32 @@ namespace JojaOnline
 
 			// Load JojaSite ad banners
 			jojaAdBanners = helper.Content.Load<Texture2D>(Path.Combine("assets", "jojaBanners.png"));
+
+			// Load JojaSite's app icon for Mobile Phone mod
+			jojaAppIcon = helper.Content.Load<Texture2D>(Path.Combine(@"assets\mobile", "jojaIcon.png"));
+
+			// Load JojaSite's app vertical background for Mobile Phone mod
+			jojaMobileVertBackground = helper.Content.Load<Texture2D>(Path.Combine(@"assets\mobile", "jojaMobileVerticalBG.png"));
+
+			// Load JojaSite's app horizontal background for Mobile Phone mod
+			jojaMobileHorzBackground = helper.Content.Load<Texture2D>(Path.Combine(@"assets\mobile", "jojaMobileHorizontalBG.png"));
+		}
+
+		public static JojaSite GetScaledJojaSite()
+        {
+			// Check if we need to scale back the UI
+			int width = 750;
+			int height = 1000;
+			float scale = 1f;
+
+			if (height > Game1.uiViewport.Height)
+			{
+				scale = 750 / 1000f;
+				width = 525;
+				height = 700;
+			}
+
+			return new JojaSite(width, height, scale);
 		}
 
 		public static Texture2D GetJojaMailBackground()
@@ -186,6 +216,16 @@ namespace JojaOnline
 			return jojaCheckoutBackground;
 		}
 
+		public static Texture2D GetJojaMobileVertBackground()
+		{
+			return jojaMobileVertBackground;
+		}
+
+		public static Texture2D GetJojaMobileHorzBackground()
+		{
+			return jojaMobileHorzBackground;
+		}
+
 		public static Texture2D GetJojaSiteSpriteSheet()
 		{
 			return jojaSiteSpriteSheet;
@@ -194,6 +234,11 @@ namespace JojaOnline
 		public static Texture2D GetJojaAdBanners()
 		{
 			return jojaAdBanners;
+		}
+
+		public static Texture2D GetJojaAppIcon()
+		{
+			return jojaAppIcon;
 		}
 	}
 }

@@ -18,20 +18,7 @@ namespace JojaOnline.JojaOnline.Patches
         {
             if (__instance.name == "Computer")
             {
-                // May need to scale
-                // Check if we need to scale back the UI
-                int width = 750;
-                int height = 1000;
-                float scale = 1f;
-
-                if (height > Game1.uiViewport.Height)
-                {
-                    scale = 750 / 1000f;
-                    width = 525;
-                    height = 700;
-                }
-
-                Game1.activeClickableMenu = new JojaSite(width, height, scale);
+                Game1.activeClickableMenu = JojaResources.GetScaledJojaSite();
                 return false;
             }
 

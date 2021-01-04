@@ -11,6 +11,10 @@
    {
       "UniqueID": "DIGUS.MailFrameworkMod",
       "IsRequired": true
+   },
+   {
+      "UniqueID": "aedenthorn.MobilePhone",
+      "IsRequired": false
    }
 ]
 }
