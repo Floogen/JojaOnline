@@ -175,7 +175,7 @@ namespace JojaOnline
 			jojaAdBanners = helper.Content.Load<Texture2D>(Path.Combine("assets", "jojaBanners.png"));
 
 			// Load JojaSite's app icon for Mobile Phone mod
-			jojaAppIcon = helper.Content.Load<Texture2D>(Path.Combine(@"assets\mobile", "icon.png"));
+			jojaAppIcon = helper.Content.Load<Texture2D>(Path.Combine(@"assets\mobile", "jojaIcon.png"));
 
 			// Load JojaSite's app vertical background for Mobile Phone mod
 			jojaMobileVertBackground = helper.Content.Load<Texture2D>(Path.Combine(@"assets\mobile", "jojaMobileVerticalBG.png"));

@@ -84,9 +84,6 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
-    <Content Include="JojaOnline\assets\mobile\icon.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="JojaOnline\assets\jojaBanners.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -94,6 +91,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="JojaOnline\assets\jojaLetterBG.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="JojaOnline\assets\mobile\jojaIcon.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="JojaOnline\assets\mobile\jojaMobileHorizontalBG.png">
