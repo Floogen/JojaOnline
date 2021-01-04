@@ -1,3 +1,4 @@
+﻿using JojaOnline.JojaOnline.UI;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StardewModdingAPI;
@@ -183,6 +184,21 @@ namespace JojaOnline
 			jojaMobileHorzBackground = helper.Content.Load<Texture2D>(Path.Combine(@"assets\mobile", "jojaMobileHorizontalBG.png"));
 		}
 
+		public static JojaSite GetScaledJojaSite()
+        {
+			// Check if we need to scale back the UI
+			int width = 750;
+			int height = 1000;
+			float scale = 1f;
+
+			if (height > Game1.uiViewport.Height)
+			{
+				scale = 750 / 1000f;
+				width = 525;
+				height = 700;
+			}
+
+			return new JojaSite(width, height, scale);
 		}
 
 		public static Texture2D GetJojaMailBackground()
