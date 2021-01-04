@@ -3,6 +3,7 @@ using System.Reflection;
 using Harmony;
 using JojaOnline.JojaOnline;
 using JojaOnline.JojaOnline.Mailing;
+using JojaOnline.JojaOnline.Mobile;
 using JojaOnline.JojaOnline.UI;
 using StardewModdingAPI;
 using StardewModdingAPI.Events;
@@ -44,6 +45,9 @@ namespace JojaOnline
             // Get the image resources needed for the mod
             JojaResources.LoadTextures(helper);
 
+            // Hook into the game launch
+            helper.Events.GameLoop.GameLaunched += this.OnGameLaunched;
+
             // Hook into the game's daily events
             helper.Events.GameLoop.DayStarted += this.OnDayStarting;
             helper.Events.GameLoop.SaveLoaded += this.OnSaveLoaded;
@@ -75,6 +79,17 @@ namespace JojaOnline
 
             JojaSite.PickRandomItemForDiscount(this.config.minSalePercentage, this.config.maxSalePercentage);
             this.Monitor.Log($"Picked a random item for discount at JojaOnline store.", LogLevel.Debug);
+        }
+
+        private void OnGameLaunched(object sender, GameLaunchedEventArgs e)
+        {
+            // Check if aedenthorn's Mobile Phone is in the current mod list
+            if (Helper.ModRegistry.IsLoaded("aedenthorn.MobilePhone"))
+            {
+                // Attempt to load the JojaOnline app into the Mobile Phone
+                Monitor.Log("Attempting to hook into aedenthorn.MobilePhone.", LogLevel.Debug);
+                JojaMobile.LoadApp(Helper);
+            }
         }
     }
 }
