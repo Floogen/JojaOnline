@@ -63,8 +63,9 @@ This mod creates a `config.json` under the `...\JojaOnline\JojaOnline` folder. I
 
 
 ## Dependencies
- - [Custom Furniture](https://www.nexusmods.com/stardewvalley/mods/1254)
  - [Mail Framework Mod](https://www.nexusmods.com/stardewvalley/mods/1536?tab=posts)
+ - [Custom Furniture](https://www.nexusmods.com/stardewvalley/mods/1254) (Optional: Use this or Mobile Phone)
+ - [Mobile Phone](https://www.nexusmods.com/stardewvalley/mods/6523) (Optional: Use this or Custom Furniture)
 
 ## Compatibility
 **JojaOnline** is compatible with Stardew Valley v1.5+ for single-player (multiplayer is not supported).
