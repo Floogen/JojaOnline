@@ -1,4 +1,5 @@
 
+
 # JojaOnline
 
 **JojaOnline** is a mod for [Stardew Valley](http://stardewvalley.net/) that adds a new "online" shop. This mod also adds a computer furniture, which allows access to the new store.
@@ -16,11 +17,15 @@ The idea behind **JojaOnline** was to create a mod that gave players the ability
 4. Run the game using SMAPI.
 
 ## Using JojaOnline
+### If using Custom Furniture
 Purchase the Computer furniture from your local carpenter store (Robin) and place it anywhere (presumably your home).
 
 ![](screenshots/computer.png)
 
 Right click the Computer to open up **JojaOnline**.
+
+### If using Mobile Phone
+Open your in-game phone from using the Mobile mod and click the **JojaOnline** app icon.
 
 The items available for purchase will be displayed on the lower half of the screen. Left clicking an item will add it to your cart, while right clicking will *remove* items. You can shift click to add or remove multiple items, as well as hold down to add or remove until you let go.
 
