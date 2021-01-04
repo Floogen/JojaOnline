@@ -38,9 +38,10 @@ namespace JojaOnline.JojaOnline.Mailing
                 int deliveryDate = daysToWait + Game1.dayOfMonth > 28 ? daysToWait : daysToWait + Game1.dayOfMonth;
 
                 // Need to save this mail data if it can't be delivered before shutdown
-                recipient.mailForTomorrow.Add($"{mailOrderID}[{message}][{deliveryDate}][{String.Join(", ", packagedItems.Select(i => $"[{i.Name}, {i.getCategoryName()}, {i.parentSheetIndex}, {i.Stack}]"))}]");
+                recipient.mailForTomorrow.Add($"{mailOrderID}[{message}][{deliveryDate}][{String.Join(", ", packagedItems.Select(i => $"[{i.Name}, {(String.IsNullOrEmpty(i.getCategoryName()) ? (i.category == -9 ? "BigCraftable" : i.category.ToString()) : i.getCategoryName())}, {i.parentSheetIndex}, {i.Stack}]"))}]");
 
-                monitor.Log($"JojaMail order [#{orderNumber}] created with delivery date of [{deliveryDate}] {String.Join(", ", packagedItems.Select(i => $"[{i.Name}, {i.getCategoryName()}, {i.parentSheetIndex}, {i.Stack}]"))}!", LogLevel.Debug);
+                // BigCraftableCategory == -9
+                monitor.Log($"JojaMail order [#{orderNumber}] created with delivery date of [{deliveryDate}] {String.Join(", ", packagedItems.Select(i => $"[{i.Name}, {(String.IsNullOrEmpty(i.getCategoryName()) ? (i.category == -9 ? "BigCraftable" : i.category.ToString()) : i.getCategoryName())}, {i.parentSheetIndex}, {i.Stack}]"))}!", LogLevel.Debug);
             }
             catch (Exception ex)
             {
@@ -112,6 +113,14 @@ namespace JojaOnline.JojaOnline.Mailing
                     else if (itemCategory.Equals("Furniture"))
                     {
                         itemsToPackage.Add(new Furniture(itemID, Vector2.Zero) { Stack = stockCount });
+                    }
+                    else if (itemCategory.Equals("BigCraftable"))
+                    {
+                        // Have to add one for each in stockCount, as BigCraftable don't stack
+                        for (int x = 0; x < stockCount; x++)
+                        {
+                            itemsToPackage.Add(new StardewValley.Object(Vector2.Zero, itemID));
+                        }
                     }
                     else
                     {
