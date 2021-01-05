@@ -40,7 +40,7 @@ namespace JojaOnline
 			return modMonitor;
 		}
 
-		public static void SetJojaOnlineStock(bool doStockAllSeedsBeforeYearOne)
+		public static void SetJojaOnlineStock(Dictionary<string, int> nameToPriceOverrides, bool doStockAllSeedsBeforeYearOne)
 		{
 			// Clone the current stock
 			jojaOnlineStock = new Dictionary<ISalable, int[]>();
@@ -141,7 +141,28 @@ namespace JojaOnline
 
 			// Add Auto-Petter (normally only available from completing Joja route)
 			AddToJojaOnlineStock(new Object(Vector2.Zero, 272), 50000);
+
+			// Override the prices if the user has given us any
+			OverridePrices(nameToPriceOverrides);
 		}
+
+		private static void OverridePrices(Dictionary<string, int> nameToPriceOverrides)
+        {
+			foreach (string itemName in nameToPriceOverrides.Keys)
+            {
+				ISalable item = jojaOnlineStock.Keys.FirstOrDefault(i => i.Name.Equals(itemName, StringComparison.OrdinalIgnoreCase) || i.DisplayName.Equals(itemName, StringComparison.OrdinalIgnoreCase));
+
+				if (item != null)
+                {
+					jojaOnlineStock[item][0] = nameToPriceOverrides[itemName];
+					modMonitor.Log($"{itemName} was overridden by the user with the price of {nameToPriceOverrides[itemName]}.", LogLevel.Trace);
+				}
+				else
+                {
+					modMonitor.Log($"{itemName} was requested for override with the price of {nameToPriceOverrides[itemName]}, but item was missing from the stock.", LogLevel.Trace);
+                }
+            }
+        }
 
 		public static void AddToJojaOnlineStock(Object item, int salePrice = -1, int stock = -1)
         {

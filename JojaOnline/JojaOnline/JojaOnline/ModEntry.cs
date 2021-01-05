@@ -76,7 +76,7 @@ namespace JojaOnline
         private void OnDayStarting(object sender, DayStartedEventArgs e)
         {
             // Modify JojaStock to include all year seed stock (if past year 1) & other items
-            JojaResources.SetJojaOnlineStock(this.config.areAllSeedsAvailableBeforeYearOne);
+            JojaResources.SetJojaOnlineStock(this.config.itemNameToPriceOverrides, this.config.areAllSeedsAvailableBeforeYearOne);
 
             JojaSite.PickRandomItemForDiscount(this.config.minSalePercentage, this.config.maxSalePercentage);
             this.Monitor.Log($"Picked a random item for discount at JojaOnline store.", LogLevel.Debug);
