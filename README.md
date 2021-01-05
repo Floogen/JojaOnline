@@ -1,5 +1,6 @@
 
 
+
 # JojaOnline
 
 **JojaOnline** is a mod for [Stardew Valley](http://stardewvalley.net/) that adds a new "online" shop. This mod also adds a computer furniture, which allows access to the new store.
@@ -12,7 +13,7 @@ The idea behind **JojaOnline** was to create a mod that gave players the ability
 
 ## Install
 1. [Install the latest version of SMAPI](https://smapi.io/).
-2. [Install all the dependencies](#requirements).
+2. [Install all the dependencies](#dependencies).
 3. Install [this mod from Nexus mods](http://www.nexusmods.com/stardewvalley/mods/7486).
 4. Run the game using SMAPI.
 
@@ -58,8 +59,10 @@ This mod creates a `config.json` under the `...\JojaOnline\JojaOnline` folder. I
 |Name| Description | Default Value |
 |--|--|--|
 | `areAllSeedsAvailableBeforeYearOne` | If `true`, it adds all of JojaMart's seed stocks to the **JojaOnline** shop, regardless of season. | `false` |
+| `giveJojaMemberDiscount` | If `true`, it removes the 25% price increase from the **JojaOnline** shop. | `false` |
 | `minSalePercentage` | The minimum sale percentage the shop will use. | `5` |
 | `maxSalePercentage` | The maximum sale percentage the shop will use. | `35` |
+| `itemNameToPriceOverrides` | A dictionary of item names to prices, which will override their default prices in **JojaOnline**. Example: `{"Joja Cola": 500}`. | `{}` |
 
 
 ## Dependencies
@@ -70,4 +73,4 @@ This mod creates a `config.json` under the `...\JojaOnline\JojaOnline` folder. I
 ## Compatibility
 **JojaOnline** is compatible with Stardew Valley v1.5+ for single-player (multiplayer is not supported).
 
-Please note **JojaOnline** will not work with SpaceCore v1.5+ due to an issue with PyTk (required for Custom Furniture). If you must use SpaceCore, please use v1.4.0.
+Please note **JojaOnline** will not work with Custom Furniture when paired with SpaceCore v1.5+ due to an issue with PyTk (required for Custom Furniture). If you must use SpaceCore, please use the Mobile Phone instead of Custom Furniture (or use SpaceCore v1.4.0).
