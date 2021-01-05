@@ -91,6 +91,9 @@ namespace JojaOnline
                 Monitor.Log("Attempting to hook into aedenthorn.MobilePhone.", LogLevel.Debug);
                 JojaMobile.LoadApp(Helper);
             }
+
+            // Check if the player should get the Joja Membership discount via config file
+            JojaSite.SetMembershipStatus(this.config.giveJojaMemberDiscount);
         }
     }
 }

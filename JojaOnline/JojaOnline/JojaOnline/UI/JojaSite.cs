@@ -52,6 +52,9 @@ namespace JojaOnline.JojaOnline.UI
         private string hoverText = "";
         private string boldTitleText = "";
 
+        // Membership related
+        private static bool isJojaMember = false;
+
         // Random sale item related
         private static int randomSaleItemId = -1;
         private static float randomSalePercentageOff = 0f;
@@ -80,7 +83,7 @@ namespace JojaOnline.JojaOnline.UI
                 this.itemPriceAndStock.Add(j, new int[2]
                 {
                     // Increase sale price by 25% without membership
-                    Game1.MasterPlayer.mailReceived.Contains("JojaMember") ? jojaOnlineStock[j][0] : jojaOnlineStock[j][0] + (jojaOnlineStock[j][0] / 4),
+                    isJojaMember ? jojaOnlineStock[j][0] : jojaOnlineStock[j][0] + (jojaOnlineStock[j][0] / 4),
                     j.maximumStackSize()
                 });
             }
@@ -146,6 +149,15 @@ namespace JojaOnline.JojaOnline.UI
 
             // Override default close button position
             this.upperRightCloseButton = new ClickableTextureComponent(new Rectangle(this.xPositionOnScreen + this.width - 50, this.yPositionOnScreen + 70, (int)(scale * 48), (int)(scale * 48)), Game1.mouseCursors, new Rectangle(337, 494, 12, 12), scale * 4f);
+        }
+
+        public static void SetMembershipStatus(bool giveDiscountOverride)
+        {
+            // If player is a Joja Member or has overriden the config file, disable the 25% price increase
+            if (giveDiscountOverride || Game1.MasterPlayer.mailReceived.Contains("JojaMember"))
+            {
+                isJojaMember = true;
+            }
         }
 
         public static void PickRandomItemForDiscount(int minSalePercentage, int maxSalePercentage)
