@@ -17,12 +17,13 @@ namespace JojaOnline
         public override void Entry(IModHelper helper)
         {
             // PyTK (required for Custom Furniture) has compatibility issue with SpaceCore, must be v1.4.1 and below until SpaceCore or PyTK make the required changes
-            if (Helper.ModRegistry.IsLoaded("spacechase0.SpaceCore"))
+            if (Helper.ModRegistry.IsLoaded("spacechase0.SpaceCore") && Helper.ModRegistry.IsLoaded("Platonymous.CustomFurniture"))
             {
-                if (Helper.ModRegistry.Get("spacechase0.SpaceCore").Manifest.Version.IsNewerThan("1.4.1"))
+                if (Helper.ModRegistry.Get("spacechase0.SpaceCore").Manifest.Version.IsNewerThan("1.4.1") && !Helper.ModRegistry.Get("Platonymous.CustomFurniture").Manifest.Version.IsNewerThan("0.11.2"))
                 {
-                    throw new InvalidOperationException("JojaOnline is only compatible with SpaceCore v1.4.1 and below due to a compatibility issue with PyTK. " +
-                        "SpaceCore v1.4.1 works with Stardew Valley v1.5, so please use that if you wish to use this mod.");
+                    throw new InvalidOperationException("JojaOnline is only compatible with SpaceCore v1.4.1 and below when used with Custom Furniture v0.11.2 due to a compatibility issue with PyTK. " +
+                        "SpaceCore v1.4.1 works with Stardew Valley v1.5, so please use that if you wish to use this mod. " +
+                        "You can also optionally not use Custom Furniture and instead use the Mobile Phone mod.");
                 }
             }
 
