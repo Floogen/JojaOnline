@@ -17,7 +17,7 @@ namespace JojaOnline
 		private static IMonitor modMonitor;
 
 		private static Dictionary<ISalable, int[]> jojaOnlineStock;
-		private static List<int> cachedItemSheetIndexes = new List<int>();
+		private static List<string> cachedItemNames;
 
 		private static Texture2D jojaMailBackground;
 		private static Texture2D jojaSiteBackground;
@@ -44,6 +44,7 @@ namespace JojaOnline
 		{
 			// Clone the current stock
 			jojaOnlineStock = new Dictionary<ISalable, int[]>();
+			cachedItemNames = new List<string>();
 
 			// Add wood, stone and hardwood
 			AddToJojaOnlineStock(new Object(Vector2.Zero, 388, int.MaxValue));
@@ -166,11 +167,11 @@ namespace JojaOnline
 
 		public static void AddToJojaOnlineStock(Object item, int salePrice = -1, int stock = -1)
         {
-			if (cachedItemSheetIndexes.Contains(item.parentSheetIndex))
+			if (cachedItemNames.Contains(item.DisplayName))
             {
 				return;
             }
-			cachedItemSheetIndexes.Add(item.parentSheetIndex);
+			cachedItemNames.Add(item.DisplayName);
 
 			// Add the unique item
 			jojaOnlineStock.Add(item, new int[] { salePrice == -1 ? item.salePrice() : salePrice, stock == -1 ? int.MaxValue : stock });
