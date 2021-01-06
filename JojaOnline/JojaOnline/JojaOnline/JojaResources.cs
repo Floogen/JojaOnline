@@ -99,7 +99,7 @@ namespace JojaOnline
 			Utility.getJojaStock().Where(x => !jojaOnlineStock.ContainsKey(x.Key)).ToList().ForEach(x => jojaOnlineStock.Add(x.Key, x.Value));
 
 			// If past year one (or doStockAllSeedsBeforeYearOne), unlock all seeds (that aren't in the current season due to initial cloning)
-			if (Game1.year > 1 || doStockAllSeedsBeforeYearOne)
+			if (Game1.player.yearForSaveGame > 1 || doStockAllSeedsBeforeYearOne)
 			{
 				modMonitor.Log("Loading JojaMart's stock for all seasons for JojaOnline", LogLevel.Debug);
 				if (!Game1.currentSeason.Equals("spring"))
