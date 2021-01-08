@@ -96,7 +96,7 @@ namespace JojaOnline
 			AddToJojaOnlineStock(new Object(Vector2.Zero, 178, int.MaxValue), 50);
 
 			// Add the current JojaMart items
-			Utility.getJojaStock().Where(x => !jojaOnlineStock.ContainsKey(x.Key)).ToList().ForEach(x => jojaOnlineStock.Add(x.Key, x.Value));
+			Utility.getJojaStock().ToList().ForEach(x => AddToJojaOnlineStock(x.Key));
 
 			// If past year one (or doStockAllSeedsBeforeYearOne), unlock all seeds (that aren't in the current season due to initial cloning)
 			if (Game1.player.yearForSaveGame > 1 || doStockAllSeedsBeforeYearOne)
@@ -165,9 +165,14 @@ namespace JojaOnline
             }
         }
 
+		public static void AddToJojaOnlineStock(ISalable item, int salePrice = -1, int stock = -1)
+        {
+			AddToJojaOnlineStock(item as Object);
+		}
+
 		public static void AddToJojaOnlineStock(Object item, int salePrice = -1, int stock = -1)
         {
-			if (cachedItemNames.Contains(item.DisplayName))
+			if (cachedItemNames.Contains(item.DisplayName) && item.DisplayName != "Wallpaper" && item.DisplayName != "Flooring")
             {
 				return;
             }
