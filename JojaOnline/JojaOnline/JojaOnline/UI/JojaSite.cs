@@ -38,7 +38,7 @@ namespace JojaOnline.JojaOnline.UI
 
         private bool scrolling = false;
         private bool isCheckingOut = false;
-        private bool isNextDayShipping = false;
+        private bool isNextDayShipping = hasPrimeShipping ? true : false; // Make next day shipping default selected if Joja Prime is purchased (as it will be free)
         private bool canAffordOrder = false;
         private int currentItemIndex = 0;
 
