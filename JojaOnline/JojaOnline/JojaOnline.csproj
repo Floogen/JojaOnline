@@ -60,6 +60,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="JojaOnline\API\IJsonAssetApi.cs" />
     <Compile Include="JojaOnline\JojaResources.cs" />
     <Compile Include="JojaOnline\Mailing\JojaMail.cs" />
     <Compile Include="JojaOnline\Mobile\JojaMobile.cs" />
