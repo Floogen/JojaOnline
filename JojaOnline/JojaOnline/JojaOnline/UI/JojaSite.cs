@@ -152,6 +152,16 @@ namespace JojaOnline.JojaOnline.UI
             this.upperRightCloseButton = new ClickableTextureComponent(new Rectangle(this.xPositionOnScreen + this.width - 50, this.yPositionOnScreen + 70, (int)(scale * 48), (int)(scale * 48)), Game1.mouseCursors, new Rectangle(337, 494, 12, 12), scale * 4f);
         }
 
+        public static bool GetPrimeShippingStatus()
+        {
+            return hasPrimeShipping;
+        }
+
+        public static bool GetMembershipStatus()
+        {
+            return isJojaMember;
+        }
+
         public static void SetPrimeShippingStatus(bool givePrimeShippingOverride)
         {
             // If player has Joja Prime shipping or has overriden the config file, disable 10% shipping cost
