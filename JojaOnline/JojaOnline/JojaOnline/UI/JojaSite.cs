@@ -54,6 +54,7 @@ namespace JojaOnline.JojaOnline.UI
 
         // Membership related
         private static bool isJojaMember = false;
+        private static bool hasPrimeShipping = false;
 
         // Random sale item related
         private static int randomSaleItemId = -1;
@@ -84,7 +85,7 @@ namespace JojaOnline.JojaOnline.UI
                 {
                     // Increase sale price by 25% without membership
                     isJojaMember ? jojaOnlineStock[j][0] : jojaOnlineStock[j][0] + (jojaOnlineStock[j][0] / 4),
-                    j.maximumStackSize()
+                    j.Stack
                 });
             }
 
@@ -434,16 +435,16 @@ namespace JojaOnline.JojaOnline.UI
 
         private bool tryToPurchaseItem(ISalable item, int numberToBuy, int x, int y, int indexInForSaleList)
         {
-            if (item.GetSalableInstance().maximumStackSize() < numberToBuy)
+            if (itemPriceAndStock[item][1] < numberToBuy)
             {
-                numberToBuy = Math.Max(1, item.GetSalableInstance().maximumStackSize());
+                numberToBuy = Math.Max(0, itemPriceAndStock[item][1]);
             }
 
             if (itemsInCart.ContainsKey(item))
             {
                 itemsInCart[item][1] += numberToBuy;
             }
-            else
+            else if (numberToBuy > 0)
             {
                 itemsInCart.Add(item, new int[] { this.itemPriceAndStock[item][0], numberToBuy });
             }
