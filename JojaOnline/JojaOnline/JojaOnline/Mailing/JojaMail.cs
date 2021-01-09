@@ -1,4 +1,6 @@
-﻿using MailFrameworkMod;
+﻿using JojaOnline.JojaOnline.Items;
+using JojaOnline.JojaOnline.UI;
+using MailFrameworkMod;
 using Microsoft.Xna.Framework;
 using StardewModdingAPI;
 using StardewValley;
@@ -18,6 +20,25 @@ namespace JojaOnline.JojaOnline.Mailing
         {
             try
             {
+                // Check if packagedItems contains Joja Prime item
+                if (packagedItems.Any(i => i.ParentSheetIndex == JojaItems.GetJojaPrimeMembershipID()))
+                {
+                    // Remove Joja Prime from the list of shipped items, as we actually don't want to ship it
+                    packagedItems = packagedItems.Where(i => i.ParentSheetIndex != JojaItems.GetJojaPrimeMembershipID()).ToList();
+
+                    // Now send out mail with JojaPrimeShipping id
+                    SendMail(recipient, "JojaPrimeShipping", $"Valued Member,^^Thank you for purchasing Joja Prime. You are now able to use free next day delivery on Joja Online.^^We look forward to your continued business.^^- Joja Co.");
+
+                    // Set the hasPrimeShipping to true manually, as it otherwise wouldn't update until the next day
+                    JojaSite.SetPrimeShippingStatus(true);
+
+                    // Skip rest of logic of there are no more items to ship due to removing Joja Prime
+                    if (packagedItems.Count == 0)
+                    {
+                        return true;
+                    }
+                }
+
                 // Determine order number
                 int orderNumber = 0;
                 while (MailDao.FindLetter($"JojaMailOrder[#{orderNumber}]") != null || recipient.mailReceived.Contains($"JojaMailOrder[#{orderNumber}]") || IsOrderNumberScheduled(recipient, orderNumber))
@@ -29,7 +50,7 @@ namespace JojaOnline.JojaOnline.Mailing
                 // Generate mail message
                 string message = $"Valued Customer,^^Thank you for using Joja Online. Your items for order #{orderNumber:0000} are packaged below.^^We look forward to your continued business.^^- Joja Co.";
 
-                if (Game1.MasterPlayer.mailReceived.Contains("JojaMember"))
+                if (JojaSite.GetMembershipStatus() || JojaSite.GetPrimeShippingStatus())
                 {
                     message = $"Valued Member,^^Thank you for using Joja Online. Your items for order #{orderNumber:0000} are packaged below.^^We look forward to your continued business.^^- Joja Co.";
                 }
@@ -133,6 +154,18 @@ namespace JojaOnline.JojaOnline.Mailing
 
                 SendMail(Game1.player, orderID, jojaMatch.Groups["message"].ToString(), itemsToPackage);
             }
+        }
+
+        public static void SendMail(Farmer recipient, string orderID, string message)
+        {
+            monitor.Log($"Sending out (itemless) mail order {orderID}", LogLevel.Debug);
+            Letter letter = new Letter(orderID, message, l => !recipient.mailReceived.Contains(l.Id), l => recipient.mailReceived.Add(l.Id))
+            {
+                LetterTexture = JojaResources.GetJojaMailBackground(),
+                TextColor = 7
+            };
+
+            MailDao.SaveLetter(letter);
         }
 
         public static void SendMail(Farmer recipient, string orderID, string message, List<Item> packagedItems)
