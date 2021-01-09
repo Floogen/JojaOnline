@@ -146,7 +146,7 @@ namespace JojaOnline
 
 			// Load in any Joja Prime Membership items from JojaItems
 			int primeMembershipItemID = JojaItems.GetJojaPrimeMembershipID();
-			if (primeMembershipItemID > 0)
+			if (primeMembershipItemID > 0 && !HasPrimeMembership())
             {
 				AddToJojaOnlineStock(new Object(primeMembershipItemID, 1, false, -1, 0), 500000, 1);
 			}
