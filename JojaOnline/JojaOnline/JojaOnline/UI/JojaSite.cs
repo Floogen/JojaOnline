@@ -450,13 +450,13 @@ namespace JojaOnline.JojaOnline.UI
                 numberToBuy = Math.Max(0, itemPriceAndStock[item][1]);
             }
 
-            if (itemsInCart.ContainsKey(item) && itemPriceAndStock[item][1] >= itemsInCart[item][1] + numberToBuy)
-            {
-                itemsInCart[item][1] += numberToBuy;
-            }
-            else if (numberToBuy > 0)
+            if (!itemsInCart.ContainsKey(item) && numberToBuy > 0)
             {
                 itemsInCart.Add(item, new int[] { this.itemPriceAndStock[item][0], numberToBuy });
+            }
+            else if (itemsInCart.ContainsKey(item) && itemPriceAndStock[item][1] >= itemsInCart[item][1] + numberToBuy)
+            {
+                itemsInCart[item][1] += numberToBuy;
             }
 
             return true;
