@@ -21,18 +21,24 @@ namespace JojaOnline.JojaOnline.Mailing
             try
             {
                 // Check if packagedItems contains Joja Prime item
-                if (packagedItems.Any(i => i.ParentSheetIndex == JojaItems.GetJojaPrimeMembershipID()))
+                int jojaPrimeID = JojaItems.GetJojaPrimeMembershipID();
+                if (packagedItems.Any(i => i.ParentSheetIndex == jojaPrimeID))
                 {
-                    // Remove Joja Prime from the list of shipped items, as we actually don't want to ship it
-                    packagedItems = packagedItems.Where(i => i.ParentSheetIndex != JojaItems.GetJojaPrimeMembershipID()).ToList();
                     // Remove Joja Prime from the store
                     JojaResources.RemoveFromJojaOnlineStock(packagedItems.First(i => i.ParentSheetIndex == jojaPrimeID));
 
                     // Now send out mail with JojaPrimeShipping id
-                    SendMail(recipient, "JojaPrimeShipping", $"Valued Member,^^Thank you for purchasing Joja Prime. You are now able to use free next day delivery on Joja Online.^^We look forward to your continued business.^^- Joja Co.");
+                    SendMail(recipient, "JojaPrimeShippingInfo", $"Valued Member,^^Thank you for purchasing Joja Prime. You are now able to use free next day delivery on Joja Online.^^We look forward to your continued business.^^- Joja Co.");
+
+                    // Add JojaPrimeShipping mailID to the player's received mail so the flags recognize the membership has been purchased
+                    // Otherwise the player will not have the membership until they read the mail the next day
+                    Game1.MasterPlayer.mailReceived.Add("JojaPrimeShipping");
 
                     // Set the hasPrimeShipping to true manually, as it otherwise wouldn't update until the next day
                     JojaSite.SetPrimeShippingStatus(true);
+
+                    // Remove Joja Prime from the list of shipped items, as we actually don't want to ship it
+                    packagedItems = packagedItems.Where(i => i.ParentSheetIndex != jojaPrimeID).ToList();
 
                     // Skip rest of logic of there are no more items to ship due to removing Joja Prime
                     if (packagedItems.Count == 0)
