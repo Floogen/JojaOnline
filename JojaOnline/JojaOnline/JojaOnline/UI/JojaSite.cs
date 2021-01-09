@@ -164,6 +164,8 @@ namespace JojaOnline.JojaOnline.UI
 
         public static void SetPrimeShippingStatus(bool givePrimeShippingOverride)
         {
+            hasPrimeShipping = false;
+
             // If player has Joja Prime shipping or has overriden the config file, disable 10% shipping cost
             if (givePrimeShippingOverride || JojaResources.HasPrimeMembership())
             {
@@ -173,6 +175,8 @@ namespace JojaOnline.JojaOnline.UI
 
         public static void SetMembershipStatus(bool giveDiscountOverride)
         {
+            isJojaMember = false;
+
             // If player is a Joja Member or has overriden the config file, disable the 25% price increase
             if (giveDiscountOverride || Game1.MasterPlayer.mailReceived.Contains("JojaMember"))
             {
