@@ -187,6 +187,16 @@ namespace JojaOnline
 			return jojaOnlineStock;
         }
 
+		public static bool HasPrimeMembership()
+        {
+			if (Game1.MasterPlayer.mailReceived.Contains("JojaPrimeShipping") || Game1.MasterPlayer.mailForTomorrow.Contains("JojaPrimeShipping"))
+			{
+				return true;
+            }
+
+			return false;
+		}
+
 		public static void LoadTextures(IModHelper helper)
 		{
 			// Load the MFM related background(s)
