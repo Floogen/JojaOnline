@@ -25,6 +25,8 @@ namespace JojaOnline.JojaOnline.Mailing
                 {
                     // Remove Joja Prime from the list of shipped items, as we actually don't want to ship it
                     packagedItems = packagedItems.Where(i => i.ParentSheetIndex != JojaItems.GetJojaPrimeMembershipID()).ToList();
+                    // Remove Joja Prime from the store
+                    JojaResources.RemoveFromJojaOnlineStock(packagedItems.First(i => i.ParentSheetIndex == jojaPrimeID));
 
                     // Now send out mail with JojaPrimeShipping id
                     SendMail(recipient, "JojaPrimeShipping", $"Valued Member,^^Thank you for purchasing Joja Prime. You are now able to use free next day delivery on Joja Online.^^We look forward to your continued business.^^- Joja Co.");

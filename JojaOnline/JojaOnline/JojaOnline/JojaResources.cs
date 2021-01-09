@@ -173,6 +173,15 @@ namespace JojaOnline
             }
         }
 
+		public static void RemoveFromJojaOnlineStock(ISalable item)
+		{
+			// Remove the item
+			if (jojaOnlineStock.ContainsKey(item))
+            {
+				jojaOnlineStock.Remove(item);
+			}
+		}
+
 		public static void AddToJojaOnlineStock(ISalable item, int salePrice = -1, int stock = -1)
         {
 			if (cachedItemNames.Contains(item.DisplayName) && item.DisplayName != "Wallpaper" && item.DisplayName != "Flooring")
