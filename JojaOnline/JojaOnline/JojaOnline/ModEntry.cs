@@ -4,6 +4,7 @@ using Harmony;
 using JojaOnline.JojaOnline;
 using JojaOnline.JojaOnline.Mailing;
 using JojaOnline.JojaOnline.Mobile;
+using JojaOnline.JojaOnline.Items;
 using JojaOnline.JojaOnline.UI;
 using StardewModdingAPI;
 using StardewModdingAPI.Events;
@@ -96,6 +97,14 @@ namespace JojaOnline
                 // Attempt to load the JojaOnline app into the Mobile Phone
                 Monitor.Log("Attempting to hook into aedenthorn.MobilePhone.", LogLevel.Debug);
                 JojaMobile.LoadApp(Helper);
+            }
+
+            // Check if spacechase0's JsonAssets is in the current mod list
+            if (Helper.ModRegistry.IsLoaded("spacechase0.JsonAssets"))
+            {
+                // Attempt to load the JojaOnline app into the Mobile Phone
+                Monitor.Log("Attempting to hook into spacechase0.JsonAssets.", LogLevel.Debug);
+                JojaItems.HookIntoApi(Helper);
             }
         }
     }

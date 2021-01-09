@@ -1,4 +1,5 @@
-﻿using JojaOnline.JojaOnline.UI;
+﻿using JojaOnline.JojaOnline.Items;
+using JojaOnline.JojaOnline.UI;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StardewModdingAPI;
@@ -142,6 +143,13 @@ namespace JojaOnline
 
 			// Add Auto-Petter (normally only available from completing Joja route)
 			AddToJojaOnlineStock(new Object(Vector2.Zero, 272), 50000);
+
+			// Load in any Joja Prime Membership items from JojaItems
+			int primeMembershipItemID = JojaItems.GetJojaPrimeMembershipID();
+			if (primeMembershipItemID > 0)
+            {
+				AddToJojaOnlineStock(new Object(primeMembershipItemID, 1, false, -1, 0), 500000, 1);
+			}
 
 			// Override the prices if the user has given us any
 			OverridePrices(nameToPriceOverrides);
