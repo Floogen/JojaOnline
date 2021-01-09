@@ -1,0 +1,11 @@
+{
+	"Name": "[JA] JojaOnline",
+	"Author": "PeacefulEnd",
+	"Description": "Adds Joja Prime Membership.",
+	"Version": "REPLACE_ME_WITH_VERSION",
+	"UniqueID": "PeacefulEnd.JojaOnlineJA",
+	"UpdateKeys": [],
+	"ContentPackFor": {
+    	"UniqueID": "spacechase0.JsonAssets"
+	},
+}

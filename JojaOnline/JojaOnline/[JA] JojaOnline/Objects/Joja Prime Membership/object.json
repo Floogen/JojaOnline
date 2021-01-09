@@ -1,0 +1,8 @@
+﻿{
+	"Name": "Joja Prime",
+	"Description": "A limited lifetime membership for Joja Prime. Gives free next day shipping on all items purchased from JojaOnline.",
+	"CanSell": false,
+	"Price": 0,
+	"IsColored": false,
+	"SellPrice": 500000
+}
