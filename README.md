@@ -1,6 +1,3 @@
-
-
-
 # JojaOnline
 
 **JojaOnline** is a mod for [Stardew Valley](http://stardewvalley.net/) that adds a new "online" shop. This mod also adds a computer furniture, which allows access to the new store.
@@ -62,13 +59,15 @@ This mod creates a `config.json` under the `...\JojaOnline\JojaOnline` folder. I
 |--|--|--|
 | `areAllSeedsAvailableBeforeYearOne` | If `true`, it adds all of JojaMart's seed stocks to the **JojaOnline** shop, regardless of season. | `false` |
 | `giveJojaMemberDiscount` | If `true`, it removes the 25% price increase from the **JojaOnline** shop. | `false` |
+| `giveJojaPrimeShipping` | If `true`, it makes next day delivery free. | `false` |
 | `minSalePercentage` | The minimum sale percentage the shop will use. | `5` |
 | `maxSalePercentage` | The maximum sale percentage the shop will use. | `35` |
 | `itemNameToPriceOverrides` | A dictionary of item names to prices, which will override their default prices in **JojaOnline**. Example: `{"Joja Cola": 500}`. | `{}` |
 
 
 ## Dependencies
- - [Mail Framework Mod](https://www.nexusmods.com/stardewvalley/mods/1536?tab=posts)
+ - [Mail Framework Mod](https://www.nexusmods.com/stardewvalley/mods/1536)
+ - [Json Assets](https://www.nexusmods.com/stardewvalley/mods/1720)
  - [Custom Furniture](https://www.nexusmods.com/stardewvalley/mods/1254) (Optional: Use this or Mobile Phone)
  - [Mobile Phone](https://www.nexusmods.com/stardewvalley/mods/6523) (Optional: Use this or Custom Furniture)
 
