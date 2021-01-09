@@ -122,7 +122,7 @@ namespace JojaOnline.JojaOnline.UI
             int headerHeight = (int)(70 * scale);
 
             // Logo
-            this.clickables.Add(new ClickableTextureComponent(new Rectangle(GetScaledXCoordinate((int)(IClickableMenu.borderWidth + 5 * scale), false), GetScaledYCoordinate((int)(headerY + 5 * scale), false), 172, 52), sourceSheet, new Rectangle(0, 0, 43, 13), scale * 4f));
+            this.clickables.Add(new ClickableTextureComponent(new Rectangle(GetScaledXCoordinate((int)(IClickableMenu.borderWidth + 5 * scale), false), GetScaledYCoordinate((int)(headerY + 5 * scale), false), 172, 52), sourceSheet, new Rectangle(0, 0, hasPrimeShipping ? 46 : 43, 13), scale * 4f));
 
             // Motto
             this.clickables.Add(new ClickableTextureComponent(new Rectangle(GetScaledXCoordinate((int)(this.width / 2 - (76 * 3f * scale) / 4), false), GetScaledYCoordinate((int)(headerY + headerHeight / 4), false), 228, 33), sourceSheet, new Rectangle(0, 16, 76, 11), scale * 3f));
