@@ -63,7 +63,7 @@
     <Compile Include="JojaOnline\JojaResources.cs" />
     <Compile Include="JojaOnline\Mailing\JojaMail.cs" />
     <Compile Include="JojaOnline\Mobile\JojaMobile.cs" />
-    <Compile Include="JojaOnline\Mobile\IMobileApi.cs" />
+    <Compile Include="JojaOnline\API\IMobileApi.cs" />
     <Compile Include="JojaOnline\ModConfig.cs" />
     <Compile Include="JojaOnline\ModEntry.cs" />
     <Compile Include="JojaOnline\Patches\FurniturePatch.cs" />

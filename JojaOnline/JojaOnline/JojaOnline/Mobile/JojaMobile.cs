@@ -1,4 +1,5 @@
-﻿using JojaOnline.JojaOnline.UI;
+﻿using JojaOnline.JojaOnline.API;
+using JojaOnline.JojaOnline.UI;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StardewModdingAPI;
@@ -24,7 +25,7 @@ namespace JojaOnline.JojaOnline.Mobile
             // Get modID
             modID = helper.ModRegistry.ModID;
 
-            // Attempt to hook into the interface
+            // Attempt to hook into the IMobileApi interface
             mobileApi = helper.ModRegistry.GetApi<IMobileApi>("aedenthorn.MobilePhone");
 
             if (mobileApi is null)

@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using StardewValley;
 using System;
 
-namespace JojaOnline.JojaOnline.Mobile
+namespace JojaOnline.JojaOnline.API
 {
     public interface IMobileApi
     {
