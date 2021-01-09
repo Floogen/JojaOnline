@@ -75,6 +75,12 @@ namespace JojaOnline
 
         private void OnDayStarting(object sender, DayStartedEventArgs e)
         {
+            // Check if the player should get the Joja Membership discount via config file
+            JojaSite.SetMembershipStatus(this.config.giveJojaMemberDiscount);
+
+            // Check if player should get the Joja Prime free shipping via config
+            JojaSite.SetPrimeShippingStatus(this.config.giveJojaPrimeShipping);
+
             // Modify JojaStock to include all year seed stock (if past year 1) & other items
             JojaResources.SetJojaOnlineStock(this.config.itemNameToPriceOverrides, this.config.areAllSeedsAvailableBeforeYearOne);
 
@@ -91,9 +97,6 @@ namespace JojaOnline
                 Monitor.Log("Attempting to hook into aedenthorn.MobilePhone.", LogLevel.Debug);
                 JojaMobile.LoadApp(Helper);
             }
-
-            // Check if the player should get the Joja Membership discount via config file
-            JojaSite.SetMembershipStatus(this.config.giveJojaMemberDiscount);
         }
     }
 }
