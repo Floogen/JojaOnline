@@ -175,11 +175,6 @@ namespace JojaOnline
 
 		public static void AddToJojaOnlineStock(ISalable item, int salePrice = -1, int stock = -1)
         {
-			AddToJojaOnlineStock(item as Object);
-		}
-
-		public static void AddToJojaOnlineStock(Object item, int salePrice = -1, int stock = -1)
-        {
 			if (cachedItemNames.Contains(item.DisplayName) && item.DisplayName != "Wallpaper" && item.DisplayName != "Flooring")
             {
 				return;
