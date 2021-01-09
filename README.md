@@ -46,6 +46,8 @@ After you confirm your purchase, your order will arrive by mail!
 | `Next Day` | Arrives the next morning, but **JojaOnline** will charge an additional 10% |
 | `Two Day` | **JojaOnline**'s complimentary free shipping method|
 
+**JojaOnline** also offers Joja Prime membership for a modest fee, which makes Next Day shipping free.
+
 ### ---Daily Sale---
 The shop will randomly pick a stocked item everyday to put on sale. The sale price is picked at random between `minSalePercentage` and`maxSalePercentage`.
 
