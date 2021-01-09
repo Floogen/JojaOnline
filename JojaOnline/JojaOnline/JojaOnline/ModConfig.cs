@@ -11,6 +11,7 @@ namespace JojaOnline.JojaOnline
     {
         public bool areAllSeedsAvailableBeforeYearOne { get; set; }
         public bool giveJojaMemberDiscount { get; set; }
+        public bool giveJojaPrimeShipping { get; set; }
         public int minSalePercentage { get; set; }
         public int maxSalePercentage { get; set; }
 
@@ -20,6 +21,7 @@ namespace JojaOnline.JojaOnline
         {
             this.areAllSeedsAvailableBeforeYearOne = false;
             this.giveJojaMemberDiscount = false;
+            this.giveJojaPrimeShipping = false;
 
             this.minSalePercentage = 5;
             this.maxSalePercentage = 35;

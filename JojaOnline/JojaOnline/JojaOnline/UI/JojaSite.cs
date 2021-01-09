@@ -151,6 +151,15 @@ namespace JojaOnline.JojaOnline.UI
             this.upperRightCloseButton = new ClickableTextureComponent(new Rectangle(this.xPositionOnScreen + this.width - 50, this.yPositionOnScreen + 70, (int)(scale * 48), (int)(scale * 48)), Game1.mouseCursors, new Rectangle(337, 494, 12, 12), scale * 4f);
         }
 
+        public static void SetPrimeShippingStatus(bool givePrimeShippingOverride)
+        {
+            // If player has Joja Prime shipping or has overriden the config file, disable 10% shipping cost
+            if (givePrimeShippingOverride || JojaResources.HasPrimeMembership())
+            {
+                hasPrimeShipping = true;
+            }
+        }
+
         public static void SetMembershipStatus(bool giveDiscountOverride)
         {
             // If player is a Joja Member or has overriden the config file, disable the 25% price increase
@@ -264,15 +273,16 @@ namespace JojaOnline.JojaOnline.UI
                 IClickableMenu.drawTextureBox(b, Game1.mouseCursors, new Rectangle(403, 373, 9, 9), this.twoDayShippingButton.bounds.X, this.twoDayShippingButton.bounds.Y, this.twoDayShippingButton.bounds.Width, this.twoDayShippingButton.bounds.Height, isNextDayShipping ? Color.White : Color.Gray, scale * 4f * twoDayShippingButton.scale, false);
                 Utility.drawTextWithShadow(b, "Two Day (Free)", Game1.dialogueFont, new Vector2(this.twoDayShippingButton.bounds.X + 12 * scale, this.twoDayShippingButton.bounds.Y + (LocalizedContentManager.CurrentLanguageLatin ? 16 : 12) * scale), Game1.textColor * (isNextDayShipping ? 1f : 0.25f), textScale, -1f, 0, 0, 0, 0);
 
+                string nextDayShippingText = hasPrimeShipping ? $"Next Day (Free)" : $"Next Day (+{nextDayShippingFee}%)";
                 IClickableMenu.drawTextureBox(b, Game1.mouseCursors, new Rectangle(403, 373, 9, 9), this.nextDayShippingButton.bounds.X, this.nextDayShippingButton.bounds.Y, this.nextDayShippingButton.bounds.Width, this.nextDayShippingButton.bounds.Height, isNextDayShipping ? Color.Gray : Color.White, scale * 4f * nextDayShippingButton.scale, false);
-                Utility.drawTextWithShadow(b, $"Next Day (+{nextDayShippingFee}%)", Game1.dialogueFont, new Vector2(this.nextDayShippingButton.bounds.X + 12 * scale, this.nextDayShippingButton.bounds.Y + (LocalizedContentManager.CurrentLanguageLatin ? 16 : 12) * scale), Game1.textColor * (isNextDayShipping ? 0.25f : 1f), textScale, -1f, 0, 0, 0, 0);
+                Utility.drawTextWithShadow(b, nextDayShippingText, Game1.dialogueFont, new Vector2(this.nextDayShippingButton.bounds.X + 12 * scale, this.nextDayShippingButton.bounds.Y + (LocalizedContentManager.CurrentLanguageLatin ? 16 : 12) * scale), Game1.textColor * (isNextDayShipping ? 0.25f : 1f), textScale, -1f, 0, 0, 0, 0);
 
                 // Draw the subtotal
                 //Utility.drawTextWithShadow(b, $"Subtotal:", Game1.dialogueFont, GetScaledVector(this.width - SpriteText.getWidthOfString($"Subtotal:{subTotal}g") - 50, this.height - 320), Color.LightGray, scale, 0.6f, numShadows: 0, shadowIntensity: 0);
                 //Utility.drawTextWithShadow(b, $"{subTotal}g", Game1.dialogueFont, GetScaledVector(this.width - SpriteText.getWidthOfString($"{subTotal}g") - 75, this.height - 320), Color.LightGray, scale, 0.6f, numShadows: 0, shadowIntensity: 0);
 
                 // Draw the shipping costs
-                int shippingCosts = isNextDayShipping ? subTotal / nextDayShippingFee : 0;
+                int shippingCosts = isNextDayShipping && !hasPrimeShipping ? subTotal / nextDayShippingFee : 0;
                 string shippingCostText = shippingCosts == 0 ? "FREE" : $"{shippingCosts}g";
                 Utility.drawTextWithShadow(b, $"Shipping:", Game1.dialogueFont, new Vector2(this.xPositionOnScreen + this.width / 2 + 20 * scale, (this.yPositionOnScreen + this.height - this.height / 3) - 20 * scale), Color.White, scale, 0.6f, numShadows: 0, shadowIntensity: 0);
                 Utility.drawTextWithShadow(b, shippingCostText, Game1.dialogueFont, new Vector2(this.xPositionOnScreen + this.width - SpriteText.getWidthOfString(shippingCostText) * scale - (shippingCostText == "FREE" ? 75 * scale : 25), (this.yPositionOnScreen + this.height - this.height / 3) - 20 * scale), Color.White, scale, 0.6f, numShadows: 0, shadowIntensity: 0);
