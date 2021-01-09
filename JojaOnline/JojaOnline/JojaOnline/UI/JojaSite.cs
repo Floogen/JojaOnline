@@ -440,7 +440,7 @@ namespace JojaOnline.JojaOnline.UI
                 numberToBuy = Math.Max(0, itemPriceAndStock[item][1]);
             }
 
-            if (itemsInCart.ContainsKey(item))
+            if (itemsInCart.ContainsKey(item) && itemPriceAndStock[item][1] >= itemsInCart[item][1] + numberToBuy)
             {
                 itemsInCart[item][1] += numberToBuy;
             }
