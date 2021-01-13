@@ -65,33 +65,43 @@ namespace JojaOnline
 			AddToJojaOnlineStock(new Object(Vector2.Zero, 349, int.MaxValue));
 
 			// Add some of Pierre's goods (if available)
-			foreach (Item item in (new SeedShop()).shopStock().Keys)
+			SeedShop seedShop = new SeedShop();
+			if (seedShop != null && seedShop.shopStock().Count > 0)
             {
-				if (item.parentSheetIndex == 368)
-                {
-					AddToJojaOnlineStock(new Object(Vector2.Zero, item.parentSheetIndex, int.MaxValue), 100);
-				}
-				else if (item.parentSheetIndex == 369)
+				foreach (Item item in seedShop.shopStock().Keys)
 				{
-					AddToJojaOnlineStock(new Object(Vector2.Zero, item.parentSheetIndex, int.MaxValue), 150);
-				}
-				else if (item.parentSheetIndex == 370)
-				{
-					AddToJojaOnlineStock(new Object(Vector2.Zero, item.parentSheetIndex, int.MaxValue), 100);
-				}
-				else if (item.parentSheetIndex == 371)
-				{
-					AddToJojaOnlineStock(new Object(Vector2.Zero, item.parentSheetIndex, int.MaxValue), 150);
-				}
-				else if (item.parentSheetIndex == 465)
-				{
-					AddToJojaOnlineStock(new Object(Vector2.Zero, item.parentSheetIndex, int.MaxValue), 100);
-				}
-				else if (item.parentSheetIndex == 466)
-				{
-					AddToJojaOnlineStock(new Object(Vector2.Zero, item.parentSheetIndex, int.MaxValue), 150);
+					if (item is null)
+                    {
+						continue;
+                    }
+
+					if (item.parentSheetIndex == 368)
+					{
+						AddToJojaOnlineStock(new Object(Vector2.Zero, item.parentSheetIndex, int.MaxValue), 100);
+					}
+					else if (item.parentSheetIndex == 369)
+					{
+						AddToJojaOnlineStock(new Object(Vector2.Zero, item.parentSheetIndex, int.MaxValue), 150);
+					}
+					else if (item.parentSheetIndex == 370)
+					{
+						AddToJojaOnlineStock(new Object(Vector2.Zero, item.parentSheetIndex, int.MaxValue), 100);
+					}
+					else if (item.parentSheetIndex == 371)
+					{
+						AddToJojaOnlineStock(new Object(Vector2.Zero, item.parentSheetIndex, int.MaxValue), 150);
+					}
+					else if (item.parentSheetIndex == 465)
+					{
+						AddToJojaOnlineStock(new Object(Vector2.Zero, item.parentSheetIndex, int.MaxValue), 100);
+					}
+					else if (item.parentSheetIndex == 466)
+					{
+						AddToJojaOnlineStock(new Object(Vector2.Zero, item.parentSheetIndex, int.MaxValue), 150);
+					}
 				}
 			}
+
 
 			// Add some of Marnie's goods (only hay for now)
 			AddToJojaOnlineStock(new Object(Vector2.Zero, 178, int.MaxValue), 50);
