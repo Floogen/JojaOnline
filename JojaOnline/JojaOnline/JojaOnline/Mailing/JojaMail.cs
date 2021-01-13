@@ -124,12 +124,10 @@ namespace JojaOnline.JojaOnline.Mailing
                     int itemID = -1;
                     int stockCount = -1;
 
-                    monitor.Log($"{itemMatch.Value}", LogLevel.Debug);
                     if (!Int32.TryParse(itemMatch.Value.Split(',')[2], out itemID) || !Int32.TryParse(itemMatch.Value.Split(',')[3], out stockCount))
                     {
                         continue;
                     }
-                    monitor.Log($"{itemID} | {stockCount}", LogLevel.Debug);
 
                     string itemName = itemMatch.Value.Split(',')[0].Trim();
                     int itemCategory = Int32.Parse(itemMatch.Value.Split(',')[1].Trim());
@@ -159,7 +157,6 @@ namespace JojaOnline.JojaOnline.Mailing
                     }
                 }
                 monitor.Log($"Amount of unique items being sent: {itemsToPackage.Count}", LogLevel.Trace);
-
 
                 // Remove the placeholder mail from the mailbox, as we want MFM to handle it
                 Game1.player.mailbox.Remove(placeholder);
