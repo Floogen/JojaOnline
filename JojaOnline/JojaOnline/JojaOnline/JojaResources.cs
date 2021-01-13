@@ -65,15 +65,14 @@ namespace JojaOnline
 			AddToJojaOnlineStock(new Object(Vector2.Zero, 349, int.MaxValue));
 
 			// Add some of Pierre's goods (if available)
-			SeedShop seedShop = new SeedShop();
-			if (seedShop != null && seedShop.shopStock().Count > 0)
+			try
             {
-				foreach (Item item in seedShop.shopStock().Keys)
+				foreach (Item item in new SeedShop().shopStock().Keys)
 				{
 					if (item is null)
-                    {
+					{
 						continue;
-                    }
+					}
 
 					if (item.parentSheetIndex == 368)
 					{
@@ -101,7 +100,10 @@ namespace JojaOnline
 					}
 				}
 			}
-
+			catch (ArgumentNullException ex)
+            {
+				modMonitor.Log($"Unable to load some of Pierre's goods, SeedShop seems to be empty or null: {ex}", LogLevel.Warn);
+            }
 
 			// Add some of Marnie's goods (only hay for now)
 			AddToJojaOnlineStock(new Object(Vector2.Zero, 178, int.MaxValue), 50);
