@@ -67,10 +67,9 @@ namespace JojaOnline.JojaOnline.Mailing
                 int deliveryDate = daysToWait + Game1.dayOfMonth > 28 ? daysToWait : daysToWait + Game1.dayOfMonth;
 
                 // Need to save this mail data if it can't be delivered before shutdown
-                recipient.mailForTomorrow.Add($"{mailOrderID}[{message}][{deliveryDate}][{String.Join(", ", packagedItems.Select(i => $"[{i.Name}, {(String.IsNullOrEmpty(i.getCategoryName()) ? (i.category == -9 ? "BigCraftable" : i.category.ToString()) : i.getCategoryName())}, {i.parentSheetIndex}, {i.Stack}]"))}]");
+                recipient.mailForTomorrow.Add($"{mailOrderID}[{message}][{deliveryDate}][{String.Join(", ", packagedItems.Select(i => $"[{i.Name}, {i.category}, {i.parentSheetIndex}, {i.Stack}]"))}]");
 
-                // BigCraftableCategory == -9
-                monitor.Log($"JojaMail order [#{orderNumber}] created with delivery date of [{deliveryDate}] {String.Join(", ", packagedItems.Select(i => $"[{i.Name}, {(String.IsNullOrEmpty(i.getCategoryName()) ? (i.category == -9 ? "BigCraftable" : i.category.ToString()) : i.getCategoryName())}, {i.parentSheetIndex}, {i.Stack}]"))}!", LogLevel.Debug);
+                monitor.Log($"JojaMail order [#{orderNumber}] created with delivery date of [{deliveryDate}] {String.Join(", ", packagedItems.Select(i => $"[{i.Name}, {i.category}, {i.parentSheetIndex}, {i.Stack}]"))}!", LogLevel.Debug);
             }
             catch (Exception ex)
             {
@@ -90,7 +89,7 @@ namespace JojaOnline.JojaOnline.Mailing
 
             // Get the mail coming in today, if it is a JojaOnline[DATE]#[ORDER_NUMBER] and [DATE] doesn't match today's [DATE], then addMailForTomorrow
             Regex mailRegex = new Regex(@"(?<orderID>JojaMailOrder\[#\d\d?\d?\d?\])\[(?<message>.*)\]\[(?<deliveryDate>\d\d?)\]\[(?<items>.*)\]", RegexOptions.IgnoreCase);
-            Regex itemStockRegex = new Regex(@"(?<idToStock>[a-zA-Z0-9_ .]*, [a-zA-Z0-9_ .]*, \d+, \d+)", RegexOptions.IgnoreCase);
+            Regex itemStockRegex = new Regex(@"(?<idToStock>[a-zA-Z0-9_ .]*, -?\d+, \d+, \d+)", RegexOptions.IgnoreCase);
 
             List<string> jojaMailInMailbox = Game1.player.mailbox.Where(m => mailRegex.IsMatch(m)).ToList();
             foreach (string placeholder in jojaMailInMailbox)
@@ -124,13 +123,16 @@ namespace JojaOnline.JojaOnline.Mailing
                 {
                     int itemID = -1;
                     int stockCount = -1;
+
+                    monitor.Log($"{itemMatch.Value}", LogLevel.Debug);
                     if (!Int32.TryParse(itemMatch.Value.Split(',')[2], out itemID) || !Int32.TryParse(itemMatch.Value.Split(',')[3], out stockCount))
                     {
                         continue;
                     }
+                    monitor.Log($"{itemID} | {stockCount}", LogLevel.Debug);
 
                     string itemName = itemMatch.Value.Split(',')[0].Trim();
-                    string itemCategory = itemMatch.Value.Split(',')[1].Trim();
+                    int itemCategory = Int32.Parse(itemMatch.Value.Split(',')[1].Trim());
                     if (itemName.Equals("Wallpaper"))
                     {
                         itemsToPackage.Add(new Wallpaper(itemID, false) { Stack = stockCount });
@@ -139,11 +141,11 @@ namespace JojaOnline.JojaOnline.Mailing
                     {
                         itemsToPackage.Add(new Wallpaper(itemID, true) { Stack = stockCount });
                     }
-                    else if (itemCategory.Equals("Furniture"))
+                    else if (itemCategory == -24) // "Furniture"
                     {
                         itemsToPackage.Add(new Furniture(itemID, Vector2.Zero) { Stack = stockCount });
                     }
-                    else if (itemCategory.Equals("BigCraftable"))
+                    else if (itemCategory == -9) // "BigCraftable"
                     {
                         // Have to add one for each in stockCount, as BigCraftable don't stack
                         for (int x = 0; x < stockCount; x++)
@@ -156,6 +158,8 @@ namespace JojaOnline.JojaOnline.Mailing
                         itemsToPackage.Add(new StardewValley.Object(itemID, stockCount));
                     }
                 }
+                monitor.Log($"Amount of unique items being sent: {itemsToPackage.Count}", LogLevel.Trace);
+
 
                 // Remove the placeholder mail from the mailbox, as we want MFM to handle it
                 Game1.player.mailbox.Remove(placeholder);
