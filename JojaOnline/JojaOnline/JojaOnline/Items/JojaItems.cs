@@ -41,5 +41,20 @@ namespace JojaOnline.JojaOnline.Items
 
             return jsonAssetApi.GetObjectId("Joja Prime");
         }
+
+        public static bool IsJsonAssetApiConnected()
+        {
+            if (jsonAssetApi is null)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        public static IJsonAssetApi GetJsonAssetApi()
+        {
+            return jsonAssetApi;
+        }
     }
 }
