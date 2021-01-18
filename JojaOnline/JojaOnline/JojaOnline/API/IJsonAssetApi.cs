@@ -9,7 +9,9 @@ namespace JojaOnline.JojaOnline.API
     public interface IJsonAssetApi
     {
         List<string> GetAllObjectsFromContentPack(string cp);
-        IDictionary<string, int> GetAllObjectIds();
         int GetObjectId(string name);
+
+        IDictionary<string, int> GetAllObjectIds();
+        IDictionary<string, int> GetAllCropIds();
     }
 }
