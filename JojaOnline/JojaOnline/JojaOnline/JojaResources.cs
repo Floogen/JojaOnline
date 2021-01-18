@@ -41,7 +41,7 @@ namespace JojaOnline
 			return modMonitor;
 		}
 
-		public static void SetJojaOnlineStock(Dictionary<string, int> nameToPriceOverrides, bool doStockAllSeedsBeforeYearOne)
+		public static void SetJojaOnlineStock(Dictionary<string, int> nameToPriceOverrides, bool doStockAllSeedsBeforeYearOne, bool doCopyPiereeSeedStock)
 		{
 			// Clone the current stock
 			jojaOnlineStock = new Dictionary<ISalable, int[]>();
@@ -97,6 +97,11 @@ namespace JojaOnline
 					else if (item.parentSheetIndex == 466)
 					{
 						AddToJojaOnlineStock(new Object(Vector2.Zero, item.parentSheetIndex, int.MaxValue), 150);
+					}
+					else if (item.category == -74 && doCopyPiereeSeedStock) // Is a seed, add it to the stock
+                    {
+						modMonitor.Log($"Adding {item.Name}", LogLevel.Trace);
+						AddToJojaOnlineStock(new Object(Vector2.Zero, item.parentSheetIndex, int.MaxValue));
 					}
 				}
 			}
