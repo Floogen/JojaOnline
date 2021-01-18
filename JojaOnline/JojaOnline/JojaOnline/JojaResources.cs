@@ -168,6 +168,23 @@ namespace JojaOnline
 				AddToJojaOnlineStock(new Object(primeMembershipItemID, 1, false, -1, 0), 500000, 1);
 			}
 
+			// TODO: Load in any modded seeds
+			// Need a way to get the store they are added to, as Json Asset adds the seeds OnMenuChanged...
+			// Otherwise all the modded seeds will be added, regardless if they are available...
+			/*
+			if (JojaItems.IsJsonAssetApiConnected())
+			{
+				foreach (KeyValuePair<string, int> nameToID in JojaItems.GetJsonAssetApi().GetAllCropIds())
+                {
+					Object obj = new Object(Vector2.Zero, nameToID.Value, int.MaxValue);
+					if (obj != null && obj.category == -74) // Is a seed
+					{
+
+					}
+                }
+			}
+			*/
+
 			// Override the prices if the user has given us any
 			OverridePrices(nameToPriceOverrides);
 		}
