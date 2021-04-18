@@ -145,13 +145,11 @@
     PostBuildMacros;
   </PostBuildEventDependsOn>
     <PostBuildEvent>powershell -Command "(ls *manifest.json -rec | foreach-object { $f=$_.FullName; (gc -LiteralPath \"$f\") -replace 'REPLACE_ME_WITH_VERSION',  '@(VersionNumber)' | sc -LiteralPath \"$f\" })"
-move "$(TargetDir)manifest.json" "$(TargetDir)$(ProjectName)"
-move "$(TargetDir)$(ProjectName).dll" "$(TargetDir)$(ProjectName)"
-move "$(TargetDir)$(ProjectName).pdb" "$(TargetDir)$(ProjectName)"
-xcopy /s /y /i "$(TargetDir)" "$(GameModsPath)\$(ProjectName)"
 
-powershell Remove-Item -Path '$(SolutionDir)releases\latest\*' -Recurse -Force
-xcopy /s /y /i "$(TargetDir)" "$(SolutionDir)releases\latest\$(ProjectName)"
-powershell Compress-Archive -Path '$(SolutionDir)releases\latest\*' -DestinationPath '$(SolutionDir)releases\$(ProjectName)-@(VersionNumber).zip' -Force</PostBuildEvent>
+powershell Remove-Item -Path '$(SolutionDir)releases\latest\$(SolutionName)\$(ProjectName)"' -Recurse -Force
+xcopy /s /y /i "$(TargetDir)" "$(SolutionDir)releases\latest\$(SolutionName)"
+7z a -tzip "$(SolutionDir)releases\$(SolutionName)-@(VersionNumber).zip" "$(SolutionDir)releases\latest\$(SolutionName)"
+
+xcopy /s /y /i "$(SolutionDir)releases\latest\$(SolutionName)" "$(GameModsPath)\$(SolutionName)"</PostBuildEvent>
   </PropertyGroup>
 </Project>
